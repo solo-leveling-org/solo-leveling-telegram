@@ -1,0 +1,9 @@
+app:
+  telegram:
+    bot:
+      token: ${TELEGRAM_BOT_TOKEN_DEV}
+      api:
+        url: https://api.telegram.org/bot
+      webhook:
+        host: https://solo-leveling-telegram.ru.tuna.am
+        path: webbook

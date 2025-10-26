@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.5.7</version>
+  </parent>
+
+  <groupId>com.sleepkqq</groupId>
+  <artifactId>solo-leveling-telegram</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>solo-leveling-telegram-service</module>
+    <module>solo-leveling-telegram-bot</module>
+  </modules>
+
+  <properties>
+    <java.version>24</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven-compliler.version>3.14.0</maven-compliler.version>
+
+    <!-- kotlin -->
+    <kotlin.version>2.2.21</kotlin.version>
+    <kotlin.code.style>official</kotlin.code.style>
+
+    <!-- mapstruct -->
+    <mapstruct.version>1.6.3</mapstruct.version>
+
+    <!-- telegrambots -->
+    <telegrambots.version>9.2.0</telegrambots.version>
+  </properties>
+</project>
