@@ -31,9 +31,6 @@
     <kotlin.version>2.2.21</kotlin.version>
     <kotlin.code.style>official</kotlin.code.style>
 
-    <!-- mapstruct -->
-    <mapstruct.version>1.6.3</mapstruct.version>
-
     <!-- telegrambots -->
     <telegrambots.version>9.2.0</telegrambots.version>
   </properties>
