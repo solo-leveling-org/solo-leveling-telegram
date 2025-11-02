@@ -4,7 +4,7 @@ import com.sleepkqq.sololeveling.telegram.bot.command.InterruptCommand
 import com.sleepkqq.sololeveling.telegram.bot.service.TelegramUserSessionService
 import com.sleepkqq.sololeveling.telegram.model.entity.user.Immutables
 import com.sleepkqq.sololeveling.telegram.model.entity.user.TelegramUserSession
-import com.sleepkqq.sololeveling.telegram.model.entity.user.state.TransferFlow
+import com.sleepkqq.sololeveling.telegram.model.entity.user.state.transfer.WaitingAmountState
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
@@ -20,7 +20,7 @@ class TransferCommand(
 	override fun changeState(message: Message, session: TelegramUserSession): BotApiMethod<*>? {
 		telegramUserSessionService.update(
 			Immutables.createTelegramUserSession(session) {
-				it.setState(TransferFlow.WaitingAmount())
+				it.setState(WaitingAmountState())
 			}
 		)
 		return SendMessage(message.chatId.toString(), "Введите сумму перевода")
@@ -29,7 +29,7 @@ class TransferCommand(
 	override fun pendingInterruptState(message: Message, session: TelegramUserSession) {
 		telegramUserSessionService.update(
 			Immutables.createTelegramUserSession(session) {
-				it.setPendingInterruptState(TransferFlow.WaitingAmount())
+				it.setPendingInterruptState(WaitingAmountState())
 			}
 		)
 	}
