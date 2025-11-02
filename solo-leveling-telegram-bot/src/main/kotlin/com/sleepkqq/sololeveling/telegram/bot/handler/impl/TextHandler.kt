@@ -14,10 +14,10 @@ import java.time.Instant
 @Component
 class TextHandler(
 	private val telegramUserSessionService: TelegramUserSessionService,
-	stateHandlers: List<SessionStateHandler<*>>
+	stateHandlers: List<SessionStateHandler<out BotSessionState>>
 ) : MessageHandler {
 
-	private val stateHandlersMap: Map<Class<out BotSessionState>, SessionStateHandler<*>> =
+	private val stateHandlersMap: Map<Class<out BotSessionState>, SessionStateHandler<out BotSessionState>> =
 		stateHandlers.associateBy { it.stateClass().java }
 
 	override fun handle(message: Message): BotApiMethod<*>? {
