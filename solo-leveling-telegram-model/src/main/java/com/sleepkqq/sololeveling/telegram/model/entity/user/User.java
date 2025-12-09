@@ -1,5 +1,6 @@
 package com.sleepkqq.sololeveling.telegram.model.entity.user;
 
+import com.sleepkqq.sololeveling.telegram.model.entity.Model;
 import java.util.List;
 import org.babyfish.jimmer.sql.Entity;
 import org.babyfish.jimmer.sql.Id;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Entity
 @Table(name = "users")
-public interface User {
+public interface User extends Model {
 
   @Id
   long id();

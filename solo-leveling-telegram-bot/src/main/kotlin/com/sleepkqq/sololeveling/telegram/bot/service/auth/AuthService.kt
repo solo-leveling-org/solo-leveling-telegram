@@ -20,7 +20,7 @@ class AuthService(
 		val userId = extractUserId(update) ?: return
 		UserContextHolder.setUserId(userId)
 
-		val additionalUserInfo = userInfoService.getUserAdditionalInfo()
+		val additionalUserInfo = userInfoService.getUserAdditionalInfo(userId)
 
 		val user = User("$userId", "", protoMapper.map(additionalUserInfo.rolesList))
 		val auth = UsernamePasswordAuthenticationToken(user, user.password, user.authorities)

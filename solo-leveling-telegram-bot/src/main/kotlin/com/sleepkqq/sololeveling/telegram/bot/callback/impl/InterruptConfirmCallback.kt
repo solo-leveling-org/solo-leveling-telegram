@@ -3,7 +3,6 @@ package com.sleepkqq.sololeveling.telegram.bot.callback.impl
 import com.sleepkqq.sololeveling.telegram.bot.callback.Callback
 import com.sleepkqq.sololeveling.telegram.bot.service.localization.I18nService
 import com.sleepkqq.sololeveling.telegram.bot.service.user.UserSessionService
-import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
@@ -20,11 +19,12 @@ class InterruptConfirmCallback(
 	override fun handle(callbackQuery: CallbackQuery): BotApiMethod<*> {
 		val chatId = callbackQuery.message.chatId
 		userSessionService.confirmInterruptState(chatId)
+		val state = userSessionService.get(chatId).state()
 
 		return EditMessageText.builder()
 			.chatId(chatId.toString())
 			.messageId(callbackQuery.message.messageId)
-			.text(i18nService.getMessage(LocalizationCode.CALLBACK_INTERRUPT_CONFIRMED))
+			.text(i18nService.getMessage(state.onEnterMessageCode(), state.onEnterMessageParams()))
 			.build()
 	}
 }

@@ -1,6 +1,5 @@
 package com.sleepkqq.sololeveling.telegram.bot.service.user
 
-import com.sleepkqq.sololeveling.config.interceptor.UserContextHolder
 import com.sleepkqq.sololeveling.proto.user.GetUserAdditionalInfoResponse
 import com.sleepkqq.sololeveling.proto.user.UserLocale
 import com.sleepkqq.sololeveling.proto.user.UserRole
@@ -27,19 +26,19 @@ class UserInfoService(
 	)
 	@Retryable(
 		retryFor = [StatusRuntimeException::class],
-		maxAttempts = 3,
-		recover = "recoverUserAdditionalInfo"
+		maxAttempts = 3
 	)
-	fun getUserAdditionalInfo(): GetUserAdditionalInfoResponse {
+	fun getUserAdditionalInfo(userId: Long): GetUserAdditionalInfoResponse {
 		return userApi.getUserAdditionalInfo()
 	}
 
 	@Recover
-	fun recoverUserAdditionalInfo(ex: StatusRuntimeException): GetUserAdditionalInfoResponse {
-		log.warn(
-			"Failed to fetch user info for userId={} after retries, using defaults",
-			UserContextHolder.getUserId(), ex
-		)
+	fun recoverUserAdditionalInfo(
+		ex: StatusRuntimeException,
+		userId: Long
+	): GetUserAdditionalInfoResponse {
+
+		log.warn("Failed to fetch user info for userId={} after retries, using defaults", userId, ex)
 
 		return GetUserAdditionalInfoResponse.newBuilder()
 			.addRoles(UserRole.USER)

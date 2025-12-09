@@ -9,15 +9,14 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
-@Suppress("unused")
 @Configuration
 @EnableConfigurationProperties(GrpcPlayerServiceProperties::class)
 class GrpcConfigClient(
-	private val properties: GrpcPlayerServiceProperties
-) : DefaultGrpcClientConfig() {
+	properties: GrpcPlayerServiceProperties
+) : DefaultGrpcClientConfig(properties) {
 
 	@Bean
-	fun playerManagedChannel(): ManagedChannel = createManagedChannel(properties)
+	fun playerManagedChannel(): ManagedChannel = createManagedChannel()
 
 	@Bean
 	fun localeClientInterceptor(): ClientInterceptor = UserClientInterceptor()

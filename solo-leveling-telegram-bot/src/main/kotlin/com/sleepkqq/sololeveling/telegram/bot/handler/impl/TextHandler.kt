@@ -16,11 +16,15 @@ import kotlin.reflect.KClass
 class TextHandler(
 	private val userSessionService: UserSessionService,
 	private val i18nService: I18nService,
-	stateProcessors: List<StateProcessor<BotSessionState>>
+	stateProcessors: List<StateProcessor<out BotSessionState>>
 ) : MessageHandler {
 
-	private val stateProcessorsMap: Map<KClass<BotSessionState>, StateProcessor<BotSessionState>> =
-		stateProcessors.associateBy { it.getStateClass() }
+	private val stateProcessorsMap: Map<KClass<out BotSessionState>, StateProcessor<BotSessionState>> =
+		stateProcessors.associate { processor ->
+			@Suppress("UNCHECKED_CAST")
+			(processor as StateProcessor<BotSessionState>)
+				.let { it.getStateClass() to it }
+		}
 
 	override fun handle(message: Message): BotApiMethod<*>? {
 		val session = userSessionService.find(message.chatId)

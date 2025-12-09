@@ -1,0 +1,6 @@
+spring:
+  liquibase:
+    default-schema: public
+jimmer:
+  show-sql: true
+  pretty-sql: true

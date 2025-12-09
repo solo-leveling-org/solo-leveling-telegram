@@ -16,9 +16,16 @@ spring:
     type: redis
   profiles:
     include: jimmer
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
   threads:
     virtual:
       enabled: true
+  messages:
+    basename: messages
+    encoding: UTF-8
+    cache-duration: -1
+    fallback-to-system-locale: false
 app:
   grpc:
     services:

@@ -18,7 +18,6 @@ enum class LocalizationCode(val path: String) {
 
 	// ========== Callbacks ==========
 	CALLBACK_BUTTON_PRESSED("callback.button.pressed"),
-	CALLBACK_INTERRUPT_CONFIRMED("callback.interrupt.confirmed"),
 
 	// ========== Buttons ==========
 	BUTTON_INTERRUPT_CONFIRM("button.interrupt.confirm"),

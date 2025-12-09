@@ -1,6 +1,7 @@
 package com.sleepkqq.sololeveling.telegram.bot.service.user.impl
 
 import com.sleepkqq.sololeveling.telegram.bot.service.user.UserFeedbackService
+import com.sleepkqq.sololeveling.telegram.bot.service.user.UserService
 import com.sleepkqq.sololeveling.telegram.model.entity.user.Immutables
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserFeedback
 import com.sleepkqq.sololeveling.telegram.model.repository.user.UserFeedbackRepository
@@ -11,20 +12,24 @@ import java.util.UUID
 
 @Service
 class UserFeedbackServiceImpl(
-	private val userFeedbackRepository: UserFeedbackRepository
+	private val userFeedbackRepository: UserFeedbackRepository,
+	private val userService: UserService
 ) : UserFeedbackService {
 
 	@Transactional(readOnly = true)
 	override fun find(userId: Long): List<UserFeedback> = userFeedbackRepository.find(userId)
 
 	@Transactional
-	override fun create(userId: Long, message: String): UserFeedback =
-		userFeedbackRepository.save(
+	override fun create(userId: Long, message: String): UserFeedback {
+		userService.register(userId)
+
+		return userFeedbackRepository.save(
 			Immutables.createUserFeedback {
 				it.setId(UUID.randomUUID())
 					.setMessage(message)
-					.setUser(Immutables.createUser { u -> u.setId(userId) })
+					.setUserId(userId)
 			},
-			SaveMode.UPSERT
+			SaveMode.INSERT_ONLY
 		)
+	}
 }
