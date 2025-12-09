@@ -6,6 +6,7 @@ import com.sleepkqq.sololeveling.telegram.model.entity.user.UserFeedback
 import com.sleepkqq.sololeveling.telegram.model.repository.user.UserFeedbackRepository
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Service
@@ -13,8 +14,10 @@ class UserFeedbackServiceImpl(
 	private val userFeedbackRepository: UserFeedbackRepository
 ) : UserFeedbackService {
 
+	@Transactional(readOnly = true)
 	override fun find(userId: Long): List<UserFeedback> = userFeedbackRepository.find(userId)
 
+	@Transactional
 	override fun create(userId: Long, message: String): UserFeedback =
 		userFeedbackRepository.save(
 			Immutables.createUserFeedback {

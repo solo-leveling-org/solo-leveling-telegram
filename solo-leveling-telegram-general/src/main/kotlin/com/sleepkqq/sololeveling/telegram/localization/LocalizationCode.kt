@@ -18,5 +18,11 @@ enum class LocalizationCode(val path: String) {
 	STATE_TRANSFER_CONFIRMATION("state.transfer.confirmation"),
 
 	// ========== Callbacks ==========
-	CALLBACK_BUTTON_PRESSED("callback.button.pressed")
+	CALLBACK_BUTTON_PRESSED("callback.button.pressed"),
+	CALLBACK_INTERRUPT_CONFIRMED("callback.interrupt.confirmed"),
+	CALLBACK_INTERRUPT_CANCELLED("callback.interrupt.cancelled"),
+
+	// ========== Buttons ==========
+	BUTTON_INTERRUPT_CONFIRM("button.interrupt.confirm"),
+	BUTTON_INTERRUPT_CANCEL("button.interrupt.cancel")
 }

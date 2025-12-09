@@ -4,8 +4,10 @@ import static com.sleepkqq.sololeveling.telegram.model.entity.user.Tables.USER_S
 
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserSession;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserSessionFetcher;
+import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
+import org.babyfish.jimmer.sql.ast.Expression;
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Repository;
@@ -30,5 +32,28 @@ public class UserSessionRepository {
         .setMode(saveMode)
         .execute()
         .getModifiedEntity();
+  }
+
+  public void confirmInterruptState(long userId) {
+    var table = USER_SESSION_TABLE;
+    sql.createUpdate(table)
+        .where(
+            table.userId().eq(userId),
+            table.pendingInterruptState().isNotNull()
+        )
+        .set(table.state(), table.pendingInterruptState())
+        .set(table.pendingInterruptState(), Expression.nullValue(BotSessionState.class))
+        .execute();
+  }
+
+  public void cancelInterruptState(long userId) {
+    var table = USER_SESSION_TABLE;
+    sql.createUpdate(table)
+        .where(
+            table.userId().eq(userId),
+            table.pendingInterruptState().isNotNull()
+        )
+        .set(table.pendingInterruptState(), Expression.nullValue(BotSessionState.class))
+        .execute();
   }
 }

@@ -18,14 +18,14 @@ class UserSessionServiceImpl(
 ) : UserSessionService {
 
 	@Transactional(readOnly = true)
-	override fun find(id: Long, fetcher: UserSessionFetcher): UserSession? =
-		userSessionRepository.findNullable(id, fetcher)
+	override fun find(userId: Long, fetcher: UserSessionFetcher): UserSession? =
+		userSessionRepository.findNullable(userId, fetcher)
 
 	@Transactional
-	override fun register(id: Long): UserSession = userSessionRepository.save(
+	override fun register(userId: Long): UserSession = userSessionRepository.save(
 		Immutables.createUserSession {
 			it.setId(UUID.randomUUID())
-				.setUser(Immutables.createUser { u -> u.setId(id) })
+				.setUser(Immutables.createUser { u -> u.setId(userId) })
 				.setState(IdleState())
 		},
 		SaveMode.UPSERT
@@ -39,4 +39,12 @@ class UserSessionServiceImpl(
 			},
 			SaveMode.UPDATE_ONLY
 		)
+
+	@Transactional
+	override fun confirmInterruptState(userId: Long) =
+		userSessionRepository.confirmInterruptState(userId)
+
+	@Transactional
+	override fun cancelInterruptState(userId: Long) =
+		userSessionRepository.cancelInterruptState(userId)
 }

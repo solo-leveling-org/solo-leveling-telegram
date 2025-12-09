@@ -9,17 +9,21 @@ import java.time.Instant
 interface UserSessionService {
 
 	fun find(
-		id: Long,
+		userId: Long,
 		fetcher: UserSessionFetcher = Fetchers.USER_SESSION_FETCHER.allScalarFields()
 	): UserSession?
 
 	fun get(
-		id: Long,
+		userId: Long,
 		fetcher: UserSessionFetcher = Fetchers.USER_SESSION_FETCHER.allScalarFields()
 	): UserSession =
-		find(id, fetcher) ?: throw ModelNotFoundException(UserSession::class, id)
+		find(userId, fetcher) ?: throw ModelNotFoundException(UserSession::class, userId)
 
-	fun register(id: Long): UserSession
+	fun register(userId: Long): UserSession
 
 	fun update(session: UserSession, now: Instant = Instant.now()): UserSession
+
+	fun confirmInterruptState(userId: Long)
+
+	fun cancelInterruptState(userId: Long)
 }

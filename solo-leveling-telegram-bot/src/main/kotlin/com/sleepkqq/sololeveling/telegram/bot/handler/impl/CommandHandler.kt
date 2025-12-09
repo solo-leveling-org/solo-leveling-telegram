@@ -5,7 +5,9 @@ import com.sleepkqq.sololeveling.telegram.bot.command.info.InfoCommand
 import com.sleepkqq.sololeveling.telegram.bot.command.interrupt.InterruptCommand
 import com.sleepkqq.sololeveling.telegram.bot.command.interrupt.InterruptCommand.InterruptCommandResult.Question
 import com.sleepkqq.sololeveling.telegram.bot.command.interrupt.InterruptCommand.InterruptCommandResult.StateChanged
+import com.sleepkqq.sololeveling.telegram.bot.extensions.withReplyMarkup
 import com.sleepkqq.sololeveling.telegram.bot.handler.MessageHandler
+import com.sleepkqq.sololeveling.telegram.bot.keyboard.KeyboardFactory
 import com.sleepkqq.sololeveling.telegram.bot.service.localization.I18nService
 import com.sleepkqq.sololeveling.telegram.bot.service.user.UserSessionService
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
@@ -17,7 +19,8 @@ import org.telegram.telegrambots.meta.api.objects.message.Message
 class CommandHandler(
 	commands: List<Command>,
 	private val userSessionService: UserSessionService,
-	private val i18nService: I18nService
+	private val i18nService: I18nService,
+	private val keyboardFactory: KeyboardFactory  // ← Инжектим KeyboardFactory
 ) : MessageHandler {
 
 	private val commandsMap: Map<String, Command> = commands.associateBy { it.command }
@@ -39,6 +42,7 @@ class CommandHandler(
 
 				when (val result = command.handle(message, session)) {
 					is Question -> i18nService.sendMessage(message.chatId, result.localizationCode)
+						.withReplyMarkup(keyboardFactory.interruptConfirmationKeyboard())
 
 					is StateChanged -> i18nService.sendMessage(
 						message.chatId,
