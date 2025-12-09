@@ -20,7 +20,7 @@ class CommandHandler(
 	commands: List<Command>,
 	private val userSessionService: UserSessionService,
 	private val i18nService: I18nService,
-	private val keyboardFactory: KeyboardFactory  // ← Инжектим KeyboardFactory
+	private val keyboardFactory: KeyboardFactory
 ) : MessageHandler {
 
 	private val commandsMap: Map<String, Command> = commands.associateBy { it.command }

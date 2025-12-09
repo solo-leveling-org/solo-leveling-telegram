@@ -3,6 +3,7 @@ package com.sleepkqq.sololeveling.telegram.bot.command.interrupt
 import com.sleepkqq.sololeveling.telegram.bot.command.Command
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserSession
+import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.IdleState
 import org.telegram.telegrambots.meta.api.objects.message.Message
 
@@ -30,8 +31,14 @@ interface InterruptCommand : Command {
 		) : InterruptCommandResult()
 
 		data class StateChanged(
-			val localizationCode: LocalizationCode,
-			val params: Map<String, Any> = emptyMap()
-		) : InterruptCommandResult()
+			private val botSessionState: BotSessionState
+		) : InterruptCommandResult() {
+
+			val localizationCode: LocalizationCode
+				get() = botSessionState.onEnterMessageCode()
+
+			val params: Map<String, Any>
+				get() = botSessionState.onEnterMessageParams()
+		}
 	}
 }

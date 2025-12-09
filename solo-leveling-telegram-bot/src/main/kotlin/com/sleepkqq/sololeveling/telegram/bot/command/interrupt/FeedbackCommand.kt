@@ -4,21 +4,19 @@ import com.sleepkqq.sololeveling.telegram.bot.command.interrupt.InterruptCommand
 import com.sleepkqq.sololeveling.telegram.bot.service.user.UserSessionService
 import com.sleepkqq.sololeveling.telegram.model.entity.user.Immutables
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserSession
-import com.sleepkqq.sololeveling.telegram.model.entity.user.state.transfer.TransferAmountState
-import org.springframework.context.annotation.Profile
+import com.sleepkqq.sololeveling.telegram.model.entity.user.state.feedback.FeedbackMessageState
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.objects.message.Message
 
-@Profile("transfer")
 @Component
-class TransferCommand(
+class FeedbackCommand(
 	private val userSessionService: UserSessionService
 ) : InterruptCommand {
 
-	override val command: String = "/transfer"
+	override val command: String = "/feedback"
 
 	override fun changeState(message: Message, session: UserSession): StateChanged {
-		val newState = TransferAmountState()
+		val newState = FeedbackMessageState()
 		userSessionService.update(
 			Immutables.createUserSession(session) {
 				it.setState(newState)
@@ -31,7 +29,7 @@ class TransferCommand(
 	override fun pendingInterruptState(message: Message, session: UserSession) {
 		userSessionService.update(
 			Immutables.createUserSession(session) {
-				it.setPendingInterruptState(TransferAmountState())
+				it.setPendingInterruptState(FeedbackMessageState())
 			}
 		)
 	}

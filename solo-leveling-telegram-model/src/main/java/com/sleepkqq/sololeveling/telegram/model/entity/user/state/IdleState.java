@@ -7,7 +7,7 @@ import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
 public record IdleState() implements BotSessionState {
 
   @Override
-  public LocalizationCode messageCode() {
+  public LocalizationCode onEnterMessageCode() {
     return LocalizationCode.STATE_IDLE;
   }
 }

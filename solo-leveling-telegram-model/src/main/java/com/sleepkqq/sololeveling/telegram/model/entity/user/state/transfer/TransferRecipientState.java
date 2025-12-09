@@ -5,15 +5,19 @@ import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
 
 @JsonTypeName("WaitingRecipientState")
-public record TransferRecipientState(int amount) implements BotSessionState {
+public record TransferRecipientState(long amount) implements BotSessionState {
 
   @Override
-  public LocalizationCode messageCode() {
+  public LocalizationCode onEnterMessageCode() {
     return LocalizationCode.STATE_TRANSFER_RECIPIENT;
   }
 
   @Override
   public BotSessionState nextState(String userInput) {
+    if (!userInput.startsWith("@")) {
+      return this;
+    }
+
     return new TransferConfirmationState(amount, userInput);
   }
 }

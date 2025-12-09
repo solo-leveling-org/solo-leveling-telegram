@@ -5,9 +5,6 @@ enum class LocalizationCode(val path: String) {
 	// ========== Commands ==========
 	CMD_HELP("command.help"),
 	CMD_START("command.start"),
-	CMD_PROFILE("command.profile"),
-	CMD_TRANSFER("command.transfer"),
-	CMD_STATS("command.stats"),
 	CMD_UNKNOWN("command.unknown"),
 	CMD_INTERRUPT("command.interrupt"),
 
@@ -16,11 +13,12 @@ enum class LocalizationCode(val path: String) {
 	STATE_TRANSFER_AMOUNT("state.transfer.amount"),
 	STATE_TRANSFER_RECIPIENT("state.transfer.recipient"),
 	STATE_TRANSFER_CONFIRMATION("state.transfer.confirmation"),
+	STATE_FEEDBACK_ENTER("state.feedback.enter"),
+	STATE_FEEDBACK_EXIT("state.feedback.exit"),
 
 	// ========== Callbacks ==========
 	CALLBACK_BUTTON_PRESSED("callback.button.pressed"),
 	CALLBACK_INTERRUPT_CONFIRMED("callback.interrupt.confirmed"),
-	CALLBACK_INTERRUPT_CANCELLED("callback.interrupt.cancelled"),
 
 	// ========== Buttons ==========
 	BUTTON_INTERRUPT_CONFIRM("button.interrupt.confirm"),
