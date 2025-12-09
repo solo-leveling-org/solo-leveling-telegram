@@ -1,7 +1,8 @@
 package com.sleepkqq.sololeveling.telegram.bot.service.auth
 
-import com.sleepkqq.sololeveling.telegram.bot.grpc.client.UserGrpcApi
-import com.sleepkqq.sololeveling.telegram.bot.service.redis.LocaleCacheService
+import com.sleepkqq.sololeveling.config.interceptor.UserContextHolder
+import com.sleepkqq.sololeveling.telegram.bot.mapper.ProtoMapper
+import com.sleepkqq.sololeveling.telegram.bot.service.user.UserInfoService
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -11,21 +12,21 @@ import org.telegram.telegrambots.meta.api.objects.Update
 
 @Service
 class AuthService(
-	private val localeCacheService: LocaleCacheService,
-	private val userGrpcApi: UserGrpcApi
+	private val userInfoService: UserInfoService,
+	private val protoMapper: ProtoMapper
 ) {
 
 	fun login(update: Update) {
-		val userId = extractUserId(update)
-		if (userId != null) {
-			val user = User("$userId", "", emptyList())
-			val auth = UsernamePasswordAuthenticationToken(user, user.password, user.authorities)
-			SecurityContextHolder.getContext().authentication = auth
+		val userId = extractUserId(update) ?: return
+		UserContextHolder.setUserId(userId)
 
-			localeCacheService.getOrCacheLocale(userId)
-			{ userGrpcApi.getUserLocale(userId) }
-				.let { LocaleContextHolder.setLocale(it) }
-		}
+		val additionalUserInfo = userInfoService.getUserAdditionalInfo()
+
+		val user = User("$userId", "", protoMapper.map(additionalUserInfo.rolesList))
+		val auth = UsernamePasswordAuthenticationToken(user, user.password, user.authorities)
+
+		SecurityContextHolder.getContext().authentication = auth
+		LocaleContextHolder.setLocale(protoMapper.map(additionalUserInfo.locale))
 	}
 
 	private fun extractUserId(update: Update): Long? = when {

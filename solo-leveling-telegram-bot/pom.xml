@@ -49,6 +49,13 @@
       <version>${telegrambots.version}</version>
     </dependency>
 
+    <!-- mapstruct -->
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+      <version>${mapstruct.version}</version>
+    </dependency>
+
     <!-- solo leveling -->
     <dependency>
       <groupId>com.sleepkqq</groupId>
@@ -69,6 +76,10 @@
     <dependency>
       <groupId>io.lettuce</groupId>
       <artifactId>lettuce-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-core</artifactId>
     </dependency>
   </dependencies>
 

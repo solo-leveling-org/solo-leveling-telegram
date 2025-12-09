@@ -13,6 +13,12 @@
   <artifactId>solo-leveling-telegram-model</artifactId>
 
   <dependencies>
+    <dependency>
+      <groupId>com.sleepkqq</groupId>
+      <artifactId>solo-leveling-telegram-general</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <!-- database -->
     <dependency>
       <groupId>org.postgresql</groupId>
