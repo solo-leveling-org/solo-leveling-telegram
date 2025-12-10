@@ -1,6 +1,6 @@
 package com.sleepkqq.sololeveling.telegram.bot.config
 
-import com.sleepkqq.sololeveling.telegram.bot.service.UpdateHandlerService
+import com.sleepkqq.sololeveling.telegram.bot.dispatcher.UpdateDispatcher
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
@@ -13,7 +13,7 @@ import org.telegram.telegrambots.webhook.starter.SpringTelegramWebhookBot
 @EnableConfigurationProperties(TelegramBotProperties::class)
 class TelegramBotConfig(
 	private val telegramBotProperties: TelegramBotProperties,
-	private val updateHandlerService: UpdateHandlerService,
+	private val updateDispatcher: UpdateDispatcher,
 	private val restTemplate: RestTemplate
 ) {
 
@@ -25,7 +25,7 @@ class TelegramBotConfig(
 
 		return SpringTelegramWebhookBot.builder()
 			.botPath(telegramBotProperties.webhook.path)
-			.updateHandler { updateHandlerService.handleUpdate(it) }
+			.updateHandler { updateDispatcher.dispatch(it) }
 			.setWebhook { registerWebhook() }
 			.deleteWebhook { deleteWebhook() }
 			.build()
@@ -35,7 +35,10 @@ class TelegramBotConfig(
 		try {
 			val response = restTemplate.postForObject(
 				"${telegramBotProperties.api.url}${telegramBotProperties.token}/setWebhook",
-				SetWebhook.builder().url(telegramBotProperties.webhook.url).build(),
+				SetWebhook.builder()
+					.url(telegramBotProperties.webhook.url)
+					.secretToken(telegramBotProperties.webhook.secretToken)
+					.build(),
 				String::class.java
 			)
 			log.info("Webhook registered: ${telegramBotProperties.webhook.url}, response=$response")

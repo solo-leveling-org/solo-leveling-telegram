@@ -18,20 +18,55 @@
   <modules>
     <module>solo-leveling-telegram-service</module>
     <module>solo-leveling-telegram-bot</module>
+    <module>solo-leveling-telegram-model</module>
+    <module>solo-leveling-telegram-general</module>
   </modules>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.grpc</groupId>
+        <artifactId>spring-grpc-dependencies</artifactId>
+        <version>${spring-grpc.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <properties>
-    <java.version>24</java.version>
+    <java.version>25</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven-compliler.version>3.14.0</maven-compliler.version>
+    <maven-compiler.version>3.14.0</maven-compiler.version>
 
     <!-- kotlin -->
-    <kotlin.version>2.2.21</kotlin.version>
+    <kotlin.version>2.3.0-Beta2</kotlin.version>
     <kotlin.code.style>official</kotlin.code.style>
+
+    <!-- solo leveling -->
+    <solo-leveling-lib.version>1.4.12</solo-leveling-lib.version>
+
+    <!-- grpc -->
+    <spring-grpc.version>0.11.0</spring-grpc.version>
 
     <!-- telegrambots -->
     <telegrambots.version>9.2.0</telegrambots.version>
+
+    <!-- mapstruct -->
+    <mapstruct.version>1.6.3</mapstruct.version>
+
+    <!-- database -->
+    <postgresql.version>42.7.7</postgresql.version>
+    <liquibase.version>4.33.0</liquibase.version>
+    <jimmer.version>0.9.117</jimmer.version>
+
+    <!-- utils -->
+    <build-helper-plugin.version>3.3.0</build-helper-plugin.version>
+
+    <!-- tests -->
+    <test-containers.version>1.21.3</test-containers.version>
+    <mockito-kotlin.version>5.1.0</mockito-kotlin.version>
   </properties>
 </project>

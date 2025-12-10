@@ -1,4 +1,44 @@
+spring:
+  application:
+    name: solo-leveling-telegram
+  datasource:
+    url: jdbc:postgresql://localhost:5432/solo_leveling
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      pool-name: TelegramHikariCP
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 8
+  cache:
+    type: redis
+  profiles:
+    include: jimmer
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  threads:
+    virtual:
+      enabled: true
+  messages:
+    basename: messages
+    encoding: UTF-8
+    cache-duration: -1
+    fallback-to-system-locale: false
 app:
+  grpc:
+    services:
+      player:
+        host: localhost
+        port: 11001
   telegram:
     bot:
       token: ${TELEGRAM_BOT_TOKEN_DEV}
@@ -7,3 +47,21 @@ app:
       webhook:
         host: https://solo-leveling-telegram.ru.tuna.am
         path: webbook
+        secret-token: ${TELEGRAM_WEBHOOK_SECRET_TOKEN_DEV}
+  cache:
+    redis:
+      default-ttl: 1h
+      caches:
+        user-info:
+          ttl: 30m
+          nullable: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}
+server:
+  port: 10005

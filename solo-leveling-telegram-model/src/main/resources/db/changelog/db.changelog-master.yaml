@@ -1,0 +1,4 @@
+databaseChangeLog:
+  # v1
+  - include:
+      file: db/changelog/v1/09-12-2025--user-tables-initialize.yml

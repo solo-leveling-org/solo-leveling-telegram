@@ -18,6 +18,22 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.retry</groupId>
+      <artifactId>spring-retry</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.grpc</groupId>
+      <artifactId>spring-grpc-spring-boot-starter</artifactId>
+    </dependency>
 
     <!-- kotlin -->
     <dependency>
@@ -32,6 +48,39 @@
       <artifactId>telegrambots-springboot-webhook-starter</artifactId>
       <version>${telegrambots.version}</version>
     </dependency>
+
+    <!-- mapstruct -->
+    <dependency>
+      <groupId>org.mapstruct</groupId>
+      <artifactId>mapstruct</artifactId>
+      <version>${mapstruct.version}</version>
+    </dependency>
+
+    <!-- solo leveling -->
+    <dependency>
+      <groupId>com.sleepkqq</groupId>
+      <artifactId>solo-leveling-telegram-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sleepkqq</groupId>
+      <artifactId>solo-leveling-proto</artifactId>
+      <version>${solo-leveling-lib.version}</version>
+    </dependency>
+
+    <!-- redis -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.lettuce</groupId>
+      <artifactId>lettuce-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-core</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -45,7 +94,7 @@
         <executions>
           <execution>
             <id>compile</id>
-            <phase>compile</phase>
+            <phase>process-sources</phase>
             <goals>
               <goal>compile</goal>
             </goals>
@@ -57,11 +106,25 @@
               <goal>test-compile</goal>
             </goals>
           </execution>
+          <execution>
+            <id>kapt</id>
+            <goals>
+              <goal>kapt</goal>
+            </goals>
+            <configuration>
+              <annotationProcessorPaths>
+                <annotationProcessorPath>
+                  <groupId>org.mapstruct</groupId>
+                  <artifactId>mapstruct-processor</artifactId>
+                  <version>${mapstruct.version}</version>
+                </annotationProcessorPath>
+              </annotationProcessorPaths>
+            </configuration>
+          </execution>
         </executions>
         <configuration>
           <args>
             <arg>-Xjsr305=strict</arg>
-            <arg>-Xannotation-default-target=param-property</arg>
           </args>
           <compilerPlugins>
             <plugin>spring</plugin>
@@ -75,6 +138,15 @@
             <version>${kotlin.version}</version>
           </dependency>
         </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.14.0</version>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+        </configuration>
       </plugin>
     </plugins>
   </build>
