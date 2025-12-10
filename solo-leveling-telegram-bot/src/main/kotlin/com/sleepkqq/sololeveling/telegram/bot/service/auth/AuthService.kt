@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.objects.Update
+import org.telegram.telegrambots.meta.api.objects.User as TgUser
 
 @Service
 class AuthService(
@@ -17,10 +18,15 @@ class AuthService(
 ) {
 
 	fun login(update: Update) {
-		val userId = extractUserId(update) ?: return
+		val telegramUser = extractTelegramUser(update) ?: return
+		val userId = telegramUser.id
+
 		UserContextHolder.setUserId(userId)
 
-		val additionalUserInfo = userInfoService.getUserAdditionalInfo(userId)
+		val additionalUserInfo = userInfoService.getUserAdditionalInfo(
+			userId,
+			telegramUser.languageCode
+		)
 
 		val user = User("$userId", "", protoMapper.map(additionalUserInfo.rolesList))
 		val auth = UsernamePasswordAuthenticationToken(user, user.password, user.authorities)
@@ -29,17 +35,18 @@ class AuthService(
 		LocaleContextHolder.setLocale(protoMapper.map(additionalUserInfo.locale))
 	}
 
-	private fun extractUserId(update: Update): Long? = when {
-		update.hasMessage() -> update.message?.from?.id
-		update.hasCallbackQuery() -> update.callbackQuery?.from?.id
-		update.hasInlineQuery() -> update.inlineQuery?.from?.id
-		update.hasEditedMessage() -> update.editedMessage?.from?.id
-		update.hasChannelPost() -> update.channelPost?.from?.id
-		update.hasEditedChannelPost() -> update.editedChannelPost?.from?.id
-		update.hasMyChatMember() -> update.myChatMember?.from?.id
-		update.hasChatMember() -> update.chatMember?.from?.id
+	private fun extractTelegramUser(update: Update): TgUser? = when {
+		update.hasMessage() -> update.message?.from
+		update.hasCallbackQuery() -> update.callbackQuery?.from
+		update.hasInlineQuery() -> update.inlineQuery?.from
+		update.hasEditedMessage() -> update.editedMessage?.from
+		update.hasChannelPost() -> update.channelPost?.from
+		update.hasEditedChannelPost() -> update.editedChannelPost?.from
+		update.hasMyChatMember() -> update.myChatMember?.from
+		update.hasChatMember() -> update.chatMember?.from
 		else -> null
 	}
 
-	fun getCurrentUser(): User? = SecurityContextHolder.getContext().authentication.principal as? User
+	fun getCurrentUser(): User? =
+		SecurityContextHolder.getContext().authentication.principal as? User
 }

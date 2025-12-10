@@ -1,6 +1,7 @@
-package com.sleepkqq.sololeveling.telegram.bot.config
+package com.sleepkqq.sololeveling.telegram.bot.config.cache
 
-import com.sleepkqq.sololeveling.telegram.bot.config.cache.RedisCacheProperties
+import com.google.protobuf.MessageLite
+import com.sleepkqq.sololeveling.proto.user.GetUserAdditionalInfoResponse
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.cache.annotation.EnableCaching
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.RedisSerializationContext
+import org.springframework.data.redis.serializer.RedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import java.time.Duration
 
@@ -23,8 +25,18 @@ class RedisConfig(
 	fun redisCacheManagerBuilderCustomizer() = RedisCacheManagerBuilderCustomizer { builder ->
 		builder.cacheDefaults(createDefaultCacheConfig())
 
-		val configMap = cacheProperties.caches.mapValues { (_, config) ->
-			createCacheConfig(config.ttl, config.nullable)
+		val configMap = cacheProperties.caches.mapValues { (name, config) ->
+			when (name) {
+				"user-info" -> createProtoCacheConfig(
+					ttl = config.ttl,
+					nullable = config.nullable,
+					serializer = ProtobufRedisSerializer(
+						GetUserAdditionalInfoResponse.getDefaultInstance()
+					)
+				)
+
+				else -> createCacheConfig(config.ttl, config.nullable)
+			}
 		}
 
 		builder.withInitialCacheConfigurations(configMap)
@@ -58,6 +70,29 @@ class RedisConfig(
 				RedisSerializationContext.SerializationPair.fromSerializer(
 					GenericJackson2JsonRedisSerializer()
 				)
+			)
+
+		if (!nullable) {
+			config = config.disableCachingNullValues()
+		}
+
+		return config
+	}
+
+	private fun <T : MessageLite> createProtoCacheConfig(
+		ttl: Duration,
+		nullable: Boolean,
+		serializer: RedisSerializer<T>
+	): RedisCacheConfiguration {
+		var config = RedisCacheConfiguration.defaultCacheConfig()
+			.entryTtl(ttl)
+			.serializeKeysWith(
+				RedisSerializationContext.SerializationPair.fromSerializer(
+					StringRedisSerializer()
+				)
+			)
+			.serializeValuesWith(
+				RedisSerializationContext.SerializationPair.fromSerializer(serializer)
 			)
 
 		if (!nullable) {

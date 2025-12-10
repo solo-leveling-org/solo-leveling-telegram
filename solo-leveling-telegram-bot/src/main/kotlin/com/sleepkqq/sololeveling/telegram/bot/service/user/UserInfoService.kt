@@ -4,6 +4,7 @@ import com.sleepkqq.sololeveling.proto.user.GetUserAdditionalInfoResponse
 import com.sleepkqq.sololeveling.proto.user.UserLocale
 import com.sleepkqq.sololeveling.proto.user.UserRole
 import com.sleepkqq.sololeveling.telegram.bot.grpc.client.UserApi
+import io.grpc.Status
 import io.grpc.StatusRuntimeException
 import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.Cacheable
@@ -28,21 +29,53 @@ class UserInfoService(
 		retryFor = [StatusRuntimeException::class],
 		maxAttempts = 3
 	)
-	fun getUserAdditionalInfo(userId: Long): GetUserAdditionalInfoResponse {
-		return userApi.getUserAdditionalInfo()
+	fun getUserAdditionalInfo(
+		userId: Long,
+		telegramLocaleTag: String?
+	): GetUserAdditionalInfoResponse {
+		return try {
+
+			userApi.getUserAdditionalInfo()
+
+		} catch (ex: StatusRuntimeException) {
+			when (ex.status) {
+				Status.NOT_FOUND -> {
+					log.info("User not found in user-api, using Telegram locale for userId={}", userId)
+					additionalInfoResponse(telegramLocaleTag)
+				}
+
+				Status.UNAVAILABLE -> {
+					log.warn("User-api is UNAVAILABLE, using Telegram locale fallback without retries")
+					additionalInfoResponse(telegramLocaleTag)
+				}
+
+				else -> {
+					throw ex
+				}
+			}
+		}
 	}
 
 	@Recover
 	fun recoverUserAdditionalInfo(
 		ex: StatusRuntimeException,
-		userId: Long
+		userId: Long,
+		telegramLocaleTag: String?
 	): GetUserAdditionalInfoResponse {
-
 		log.warn("Failed to fetch user info for userId={} after retries, using defaults", userId, ex)
-
-		return GetUserAdditionalInfoResponse.newBuilder()
-			.addRoles(UserRole.USER)
-			.setLocale(UserLocale.newBuilder().setTag(Locale.ENGLISH.language).setIsManual(false))
-			.build()
+		return additionalInfoResponse(telegramLocaleTag)
 	}
+
+	private fun additionalInfoResponse(
+		localeTag: String? = Locale.ENGLISH.language
+	): GetUserAdditionalInfoResponse =
+		GetUserAdditionalInfoResponse.newBuilder()
+			.addRoles(UserRole.USER)
+			.setLocale(
+				UserLocale.newBuilder()
+					.setTag(localeTag)
+					.setIsManual(false)
+			)
+			.build()
+
 }
