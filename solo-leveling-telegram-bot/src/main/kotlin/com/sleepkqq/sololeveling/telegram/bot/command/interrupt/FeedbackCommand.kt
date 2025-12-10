@@ -12,6 +12,11 @@ class FeedbackCommand(
 ) : InterruptCommand<FeedbackMessageState> {
 
 	override val command: String = "/feedback"
+
+	override val forList: Boolean = true
+
+	override val description: String = "Send feedback"
+
 	override fun createState(message: Message, session: UserSession): FeedbackMessageState =
 		FeedbackMessageState()
 }

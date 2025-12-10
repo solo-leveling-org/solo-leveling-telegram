@@ -14,6 +14,8 @@ class DeprecateAllTasksCommand(
 
 	override val command: String = "/deprecate_all_tasks"
 
+	override val forList: Boolean = false
+
 	@PreAuthorize("hasAuthority('DEVELOPER')")
 	override fun createState(
 		message: Message,

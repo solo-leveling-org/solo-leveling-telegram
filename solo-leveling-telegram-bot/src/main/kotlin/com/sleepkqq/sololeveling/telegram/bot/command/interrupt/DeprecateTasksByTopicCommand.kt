@@ -14,6 +14,8 @@ class DeprecateTasksByTopicCommand(
 
 	override val command: String = "/deprecate_tasks_by_topic"
 
+	override val forList: Boolean = false
+
 	@PreAuthorize("hasAuthority('DEVELOPER')")
 	override fun createState(message: Message, session: UserSession): DeprecateTasksByTopicState =
 		DeprecateTasksByTopicState()

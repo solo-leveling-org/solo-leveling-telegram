@@ -58,8 +58,11 @@ jobs:
 
       - name: Set environment variables for deployment
         run: |
-          echo "GIT_COMMIT_SHA=${{ github.sha }}" >> $GITHUB_ENV
-          echo "DOCKERHUB_USER=${{ secrets.DOCKERHUB_USER }}" >> $GITHUB_ENV
+          echo "DEPLOY_IMAGE=${{ secrets.DOCKERHUB_USER }}/solo-leveling-telegram:${{ github.sha }}" >> $GITHUB_ENV
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
+          echo "TELEGRAM_BOT_TOKEN_APP=${{ secrets.TELEGRAM_BOT_TOKEN_APP }}" >> $GITHUB_ENV
+          echo "TELEGRAM_WEBHOOK_SECRET_TOKEN_APP=${{ secrets.TELEGRAM_WEBHOOK_SECRET_TOKEN_APP }}" >> $GITHUB_ENV
           echo "REPLICAS=${{ inputs.replicas }}" >> $GITHUB_ENV
 
       - name: Generate final deployment.yml with env vars
