@@ -1,7 +1,9 @@
 package com.sleepkqq.sololeveling.telegram.bot.command.interrupt
 
 import com.sleepkqq.sololeveling.telegram.bot.command.Command
+import com.sleepkqq.sololeveling.telegram.keyboard.Keyboard
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
+import com.sleepkqq.sololeveling.telegram.localization.Localized
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserSession
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.IdleState
@@ -24,20 +26,21 @@ interface InterruptCommand : Command {
 
 	fun pendingInterruptState(message: Message, session: UserSession)
 
-	sealed class InterruptCommandResult {
+	sealed class InterruptCommandResult : Localized {
 
 		data class Question(
-			val localizationCode: LocalizationCode = LocalizationCode.CMD_INTERRUPT
+			override val localizationCode: LocalizationCode = LocalizationCode.CMD_INTERRUPT,
+			override val keyboard: Keyboard = Keyboard.INTERRUPT_CONFIRMATION
 		) : InterruptCommandResult()
 
 		data class StateChanged(
 			private val botSessionState: BotSessionState
 		) : InterruptCommandResult() {
 
-			val localizationCode: LocalizationCode
+			override val localizationCode: LocalizationCode
 				get() = botSessionState.onEnterMessageCode()
 
-			val params: Map<String, Any>
+			override val params: Map<String, Any>
 				get() = botSessionState.onEnterMessageParams()
 		}
 	}

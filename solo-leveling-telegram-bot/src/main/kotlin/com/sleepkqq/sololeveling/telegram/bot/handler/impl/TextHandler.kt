@@ -45,19 +45,10 @@ class TextHandler(
 			)
 		}
 
-		val onExitMessageCode = currentState.onExitMessageCode()
-		if (onExitMessageCode != null) {
-			return i18nService.sendMessage(
-				message.chatId,
-				onExitMessageCode,
-				currentState.onExitMessageParams()
-			)
+		if (currentState.onExitMessageCode() != null) {
+			return i18nService.sendMessage(message.chatId, currentState.onExitLocalized()!!)
 		}
 
-		return i18nService.sendMessage(
-			message.chatId,
-			newState.onEnterMessageCode(),
-			newState.onEnterMessageParams()
-		)
+		return i18nService.sendMessage(message.chatId, newState.onEnterLocalized())
 	}
 }

@@ -1,58 +1,89 @@
 package com.sleepkqq.sololeveling.telegram.bot.service.localization
 
 import com.sleepkqq.sololeveling.telegram.bot.extensions.SendMessage
+import com.sleepkqq.sololeveling.telegram.bot.extensions.withReplyMarkup
+import com.sleepkqq.sololeveling.telegram.callback.CallbackAction
+import com.sleepkqq.sololeveling.telegram.keyboard.Keyboard
+import com.sleepkqq.sololeveling.telegram.localization.Localized
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
 import org.springframework.context.MessageSource
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow
 
 @Service
 class I18nService(
 	private val messageSource: MessageSource
 ) {
-
-	private fun getMessageInternal(key: String, args: Array<out Any?>?): String {
-		return messageSource.getMessage(key, args, LocaleContextHolder.getLocale())
+	private fun getMessageInternal(
+		code: LocalizationCode,
+		params: Map<String, Any?> = emptyMap()
+	): String {
+		val args = if (params.isEmpty()) null else params.values.toTypedArray()
+		return messageSource.getMessage(code.path, args, LocaleContextHolder.getLocale())
 	}
 
-	fun getMessage(key: String, vararg args: Any?): String {
-		return getMessageInternal(key, if (args.isEmpty()) null else args)
+	private fun buildKeyboard(keyboard: Keyboard, buttonsPerRow: Int = 1): InlineKeyboardMarkup {
+		val buttons = keyboard.actions.map { createButton(it) }
+		val rows = buttons.chunked(buttonsPerRow).map { InlineKeyboardRow(it) }
+		return InlineKeyboardMarkup(rows)
 	}
 
-	fun getMessage(key: LocalizationCode, vararg args: Any?): String {
-		return getMessageInternal(key.path, if (args.isEmpty()) null else args)
+	private fun createButton(callbackAction: CallbackAction): InlineKeyboardButton {
+		return InlineKeyboardButton.builder()
+			.text(getMessageInternal(callbackAction.localizationCode))
+			.callbackData(callbackAction.action)
+			.build()
 	}
 
-	fun getMessage(key: LocalizationCode, params: Map<String, Any>): String {
-		return if (params.isEmpty()) {
-			getMessage(key)
-		} else {
-			getMessageInternal(key.path, params.values.toTypedArray())
-		}
+	// ============ SendMessage ============
+
+	fun sendMessage(chatId: Long, localized: Localized): SendMessage {
+		val message =
+			SendMessage(chatId, getMessageInternal(localized.localizationCode, localized.params))
+		return localized.keyboard
+			?.let { message.withReplyMarkup(buildKeyboard(it)) }
+			?: message
 	}
 
-	fun getMessage(key: String, params: Map<String, Any>): String {
-		return if (params.isEmpty()) {
-			getMessage(key)
-		} else {
-			getMessageInternal(key, params.values.toTypedArray())
-		}
+	fun sendMessage(
+		chatId: Long,
+		code: LocalizationCode,
+		params: Map<String, Any?> = emptyMap(),
+		keyboard: Keyboard? = null
+	): SendMessage {
+		val message = SendMessage(chatId, getMessageInternal(code, params))
+		return keyboard?.let { message.withReplyMarkup(buildKeyboard(it)) } ?: message
 	}
 
-	fun sendMessage(chatId: Long, key: LocalizationCode, vararg args: Any?): SendMessage {
-		return SendMessage(chatId, getMessage(key, *args))
+	// ============ EditMessageText ============
+
+	fun editMessageText(
+		chatId: Long,
+		messageId: Int,
+		localized: Localized
+	): EditMessageText {
+		val edit = EditMessageText.builder()
+			.chatId(chatId.toString())
+			.messageId(messageId)
+			.text(getMessageInternal(localized.localizationCode, localized.params))
+
+		return localized.keyboard
+			?.let { edit.replyMarkup(buildKeyboard(it)).build() }
+			?: edit.build()
 	}
 
-	fun sendMessage(chatId: Long, key: LocalizationCode, params: Map<String, Any>): SendMessage {
-		return SendMessage(chatId, getMessage(key, params))
-	}
+	// ============ DeleteMessage ============
 
-	fun sendMessage(chatId: Long, key: String, vararg args: Any?): SendMessage {
-		return SendMessage(chatId, getMessage(key, *args))
-	}
-
-	fun sendMessage(chatId: Long, key: String, params: Map<String, Any>): SendMessage {
-		return SendMessage(chatId, getMessage(key, params))
+	fun deleteMessage(chatId: Long, messageId: Int): DeleteMessage {
+		return DeleteMessage.builder()
+			.chatId(chatId.toString())
+			.messageId(messageId)
+			.build()
 	}
 }
