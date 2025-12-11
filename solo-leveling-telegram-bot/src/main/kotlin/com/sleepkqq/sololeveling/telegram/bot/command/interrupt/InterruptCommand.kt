@@ -65,6 +65,9 @@ interface InterruptCommand<S : BotSessionState> : Command {
 
 			override val params: Map<String, Any>
 				get() = botSessionState.onEnterMessageParams()
+
+			override val keyboard: Keyboard?
+				get() = botSessionState.onEnterMessageKeyboard()
 		}
 	}
 }
