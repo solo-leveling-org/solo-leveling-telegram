@@ -10,6 +10,10 @@ class HelpCommand : InfoCommand {
 
 	override val command: String = "/help"
 
+	override val forList: Boolean = true
+
+	override val description: String = "Show help"
+
 	override fun handle(message: Message): InfoCommandResult =
 		InfoCommandResult(LocalizationCode.CMD_HELP)
 }

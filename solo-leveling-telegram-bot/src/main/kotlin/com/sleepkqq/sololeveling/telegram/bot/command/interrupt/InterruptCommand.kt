@@ -17,9 +17,6 @@ interface InterruptCommand<S : BotSessionState> : Command {
 
 	fun createState(message: Message, session: UserSession): S
 
-	fun createPendingState(message: Message, session: UserSession): S =
-		createState(message, session)
-
 	fun handle(message: Message, session: UserSession): InterruptCommandResult<S> =
 		if (session.state() is IdleState) {
 			changeState(message, session)
@@ -44,7 +41,7 @@ interface InterruptCommand<S : BotSessionState> : Command {
 	}
 
 	fun pendingInterruptState(message: Message, session: UserSession) {
-		val pendingState = createPendingState(message, session)
+		val pendingState = createState(message, session)
 
 		userSessionService.update(
 			Immutables.createUserSession(session) {
@@ -68,6 +65,9 @@ interface InterruptCommand<S : BotSessionState> : Command {
 
 			override val params: Map<String, Any>
 				get() = botSessionState.onEnterMessageParams()
+
+			override val keyboard: Keyboard?
+				get() = botSessionState.onEnterMessageKeyboard()
 		}
 	}
 }
