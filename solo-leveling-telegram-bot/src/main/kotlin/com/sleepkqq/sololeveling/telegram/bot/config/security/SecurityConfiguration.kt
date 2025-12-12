@@ -33,11 +33,9 @@ class SecurityConfiguration(
 	@Bean
 	fun roleHierarchy(): RoleHierarchy = RoleHierarchyImpl.fromHierarchy(
 		"""
-					DEVELOPER > USER
 					MANAGER > USER
 					DEVELOPER > MANAGER
 					ADMIN > DEVELOPER
-					ADMIN > MANAGER
 					""".trimIndent()
 	)
 }
