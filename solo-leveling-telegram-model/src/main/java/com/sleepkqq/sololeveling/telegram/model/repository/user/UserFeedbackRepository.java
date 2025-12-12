@@ -1,12 +1,12 @@
 package com.sleepkqq.sololeveling.telegram.model.repository.user;
 
 import static com.sleepkqq.sololeveling.telegram.model.entity.user.Tables.USER_FEEDBACK_TABLE;
-import static com.sleepkqq.sololeveling.telegram.model.entity.user.Tables.USER_TABLE;
 
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserFeedback;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserFeedbackCount;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserFeedbackCountMapper;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.sql.JSqlClient;
 import org.babyfish.jimmer.sql.ast.mutation.SaveMode;
@@ -34,18 +34,22 @@ public class UserFeedbackRepository {
   }
 
   public UserFeedbackCount getUserFeedbackCount() {
-    var u = USER_TABLE;
     var f = USER_FEEDBACK_TABLE;
 
-    var userCount = sql.createSubQuery(u)
-        .where(u.asTableEx().feedbacks().count().gt(0L))
-        .selectCount();
+    var userCount = sql.createSubQuery(f)
+        .select(f.userId())
+        .distinct()
+        .count();
 
-    return sql.createQuery(f)
+    var result = sql.createQuery(f)
         .select(UserFeedbackCountMapper
             .userCount(userCount)
             .feedbackCount(f.count())
         )
-        .fetchOne();
+        .limit(1)
+        .fetchFirstOrNull();
+
+    return Optional.ofNullable(result)
+        .orElseGet(UserFeedbackCount::empty);
   }
 }

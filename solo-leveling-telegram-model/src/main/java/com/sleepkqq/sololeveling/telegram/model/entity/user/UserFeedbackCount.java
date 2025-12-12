@@ -11,4 +11,8 @@ public class UserFeedbackCount {
 
   private final long userCount;
   private final long feedbackCount;
+
+  public static UserFeedbackCount empty() {
+    return new UserFeedbackCount(0, 0);
+  }
 }
