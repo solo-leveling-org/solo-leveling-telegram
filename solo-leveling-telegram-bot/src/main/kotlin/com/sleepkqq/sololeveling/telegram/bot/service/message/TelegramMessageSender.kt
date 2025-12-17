@@ -73,9 +73,9 @@ class TelegramMessageSender(
 		try {
 			action()
 			log.info("✓ Message sent to chatId=$chatId")
+
 		} catch (ex: Exception) {
 			log.error("✗ Failed to send message to chatId=$chatId: ${ex.message}", ex)
-			throw ex
 		}
 	}
 
