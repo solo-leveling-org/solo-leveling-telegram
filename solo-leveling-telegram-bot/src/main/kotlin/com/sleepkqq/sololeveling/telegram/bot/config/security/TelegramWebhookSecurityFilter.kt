@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import com.sleepkqq.sololeveling.telegram.bot.config.TelegramBotProperties
+import com.sleepkqq.sololeveling.telegram.bot.config.properties.TelegramBotProperties
 
 @Component
 class TelegramWebhookSecurityFilter(

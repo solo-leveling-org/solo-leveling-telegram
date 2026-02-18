@@ -1,6 +1,7 @@
 package com.sleepkqq.sololeveling.telegram.bot.config
 
 import com.sleepkqq.sololeveling.telegram.bot.command.Command
+import com.sleepkqq.sololeveling.telegram.bot.config.properties.TelegramBotProperties
 import com.sleepkqq.sololeveling.telegram.bot.dispatcher.UpdateDispatcher
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties

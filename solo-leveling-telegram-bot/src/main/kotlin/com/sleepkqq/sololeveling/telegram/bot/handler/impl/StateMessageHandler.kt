@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.message.Message
 import kotlin.reflect.KClass
 
 @Component
-class TextHandler(
+class StateMessageHandler(
 	private val userSessionService: UserSessionService,
 	private val i18nService: I18nService,
 	stateProcessors: List<StateProcessor<out BotSessionState>>
@@ -31,10 +31,17 @@ class TextHandler(
 			?: return i18nService.sendMessage(message.chatId, LocalizationCode.STATE_IDLE)
 
 		val currentState = session.state()
-		stateProcessorsMap[currentState::class]
-			?.process(message.chatId, message.text, currentState)
 
-		val newState = currentState.nextState(message.text)
+		// Эти процессоры нужны в случае если у стейта в конечном итоге нет кнопок подтверждения
+		val processed = stateProcessorsMap[currentState::class]
+			?.process(message, currentState)
+			?: true
+
+		if (!processed) {
+			return i18nService.sendMessage(message.chatId, currentState.onEnterLocalized())
+		}
+
+		val newState = currentState.nextState(message)
 
 		if (currentState != newState) {
 			userSessionService.update(

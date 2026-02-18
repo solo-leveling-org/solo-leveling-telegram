@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.util.UUID;
 import org.babyfish.jimmer.sql.*;
 import org.babyfish.jimmer.sql.meta.UUIDIdGenerator;
-import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,20 +18,24 @@ public interface ScheduledBroadcast extends Model {
   @GeneratedValue(generatorType = UUIDIdGenerator.class)
   UUID id();
 
-  @NotNull
+  @Key
+  String name();
+
+  @Nullable
+  String fileId();
+
   Instant scheduledAt();
 
-  @NotNull
   BroadcastStatus status();
 
   @Nullable
-  Integer totalUsers();
+  Integer total();
 
   @Nullable
-  Integer successfulSends();
+  Integer totalSuccess();
 
   @Nullable
-  Integer failedSends();
+  Integer totalFailed();
 
   @OneToMany(mappedBy = "broadcast")
   List<LocalizedMessage> messages();

@@ -3,6 +3,7 @@ package com.sleepkqq.sololeveling.telegram.model.entity.user.state.transfer;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 @JsonTypeName("TransferAmountState")
 public record TransferAmountState() implements BotSessionState {
@@ -13,9 +14,9 @@ public record TransferAmountState() implements BotSessionState {
   }
 
   @Override
-  public BotSessionState nextState(String userInput) {
+  public BotSessionState nextState(Message message) {
     try {
-      var amount = Long.parseLong(userInput);
+      var amount = Long.parseLong(message.getText());
       if (amount <= 0) {
         return this;
       }

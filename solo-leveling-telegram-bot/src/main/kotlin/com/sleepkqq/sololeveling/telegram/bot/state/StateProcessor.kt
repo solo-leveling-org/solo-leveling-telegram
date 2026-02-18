@@ -1,6 +1,7 @@
 package com.sleepkqq.sololeveling.telegram.bot.state
 
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState
+import org.telegram.telegrambots.meta.api.objects.message.Message
 import kotlin.reflect.KClass
 
 interface StateProcessor<T : BotSessionState> {
@@ -13,5 +14,5 @@ interface StateProcessor<T : BotSessionState> {
 	/**
 	 * Выполняет бизнес-логику для состояния
 	 */
-	fun process(userId: Long, userInput: String, state: T)
+	fun process(message: Message, state: T): Boolean
 }

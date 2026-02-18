@@ -9,6 +9,4 @@ import java.io.InputStream
 class ImageResourceService {
 
 	fun getPhotoStream(image: Image): InputStream = ClassPathResource(image.filePath).inputStream
-
-	fun getPhotoBytes(image: Image): ByteArray = getPhotoStream(image).readBytes()
 }

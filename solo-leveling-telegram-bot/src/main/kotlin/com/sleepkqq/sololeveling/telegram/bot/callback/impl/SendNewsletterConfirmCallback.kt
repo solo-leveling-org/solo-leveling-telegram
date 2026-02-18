@@ -19,7 +19,7 @@ class SendNewsletterConfirmCallback(
 	private val i18nService: I18nService
 ) : Callback {
 
-	override val action: CallbackAction = CallbackAction.DEPRECATE_ALL_TASKS_CONFIRM
+	override val action: CallbackAction = CallbackAction.SEND_NEWSLETTER_CONFIRM
 
 	@PreAuthorize("hasAuthority('ADMIN')")
 	override fun handle(callbackQuery: CallbackQuery, session: UserSession): BotApiMethod<*> {
@@ -29,7 +29,7 @@ class SendNewsletterConfirmCallback(
 		val state = session.state() as? NewsletterConfirmationState
 			?: return i18nService.deleteMessage(userId, messageId)
 
-		val scheduledBroadcast = scheduledBroadcastService.initialize(state)
+		scheduledBroadcastService.insert(state)
 
 		userSessionService.idleState(userId)
 

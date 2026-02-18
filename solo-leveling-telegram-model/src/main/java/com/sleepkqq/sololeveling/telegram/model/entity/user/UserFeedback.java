@@ -1,6 +1,6 @@
 package com.sleepkqq.sololeveling.telegram.model.entity.user;
 
-import java.time.Instant;
+import com.sleepkqq.sololeveling.telegram.model.entity.Auditable;
 import java.util.UUID;
 import org.babyfish.jimmer.sql.Entity;
 import org.babyfish.jimmer.sql.GeneratedValue;
@@ -12,15 +12,13 @@ import org.babyfish.jimmer.sql.meta.UUIDIdGenerator;
 
 @Entity
 @Table(name = "user_feedbacks")
-public interface UserFeedback {
+public interface UserFeedback extends Auditable {
 
   @Id
   @GeneratedValue(generatorType = UUIDIdGenerator.class)
   UUID id();
 
   String message();
-
-  Instant createdAt();
 
   @ManyToOne
   @JoinColumn(name = "user_id")

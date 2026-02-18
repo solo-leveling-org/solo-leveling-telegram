@@ -3,6 +3,8 @@ package com.sleepkqq.sololeveling.telegram.model.repository.broadcast;
 import static com.sleepkqq.sololeveling.telegram.model.entity.Tables.SCHEDULED_BROADCAST_TABLE;
 
 import com.sleepkqq.sololeveling.telegram.model.entity.broadcast.ScheduledBroadcast;
+import com.sleepkqq.sololeveling.telegram.model.entity.broadcast.enums.BroadcastStatus;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.babyfish.jimmer.View;
@@ -31,5 +33,16 @@ public class ScheduledBroadcastRepository {
         .where(table.id().eq(id))
         .select(table.fetch(viewType))
         .fetchFirstOrNull();
+  }
+
+  public <V extends View<ScheduledBroadcast>> List<V> findByStatus(
+      BroadcastStatus status,
+      Class<V> viewType
+  ) {
+    var table = SCHEDULED_BROADCAST_TABLE;
+    return sql.createQuery(table)
+        .where(table.status().eq(status))
+        .select(table.fetch(viewType))
+        .execute();
   }
 }

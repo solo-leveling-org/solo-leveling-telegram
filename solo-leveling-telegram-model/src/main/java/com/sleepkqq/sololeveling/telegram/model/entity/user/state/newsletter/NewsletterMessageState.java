@@ -2,10 +2,18 @@ package com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
+import com.sleepkqq.sololeveling.telegram.model.entity.localziation.enums.MessageLocale;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
+import java.util.ArrayList;
+import java.util.List;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 @JsonTypeName("NewsletterMessageState")
-public record NewsletterMessageState() implements BotSessionState {
+public record NewsletterMessageState(
+    String name,
+    List<MessageLocale> remaining,
+    List<LocalizedMessageDto> collected
+) implements BotSessionState {
 
   @Override
   public LocalizationCode onEnterMessageCode() {
@@ -13,12 +21,26 @@ public record NewsletterMessageState() implements BotSessionState {
   }
 
   @Override
-  public BotSessionState nextState(String userInput) {
-    try {
-      return new NewsletterDateTimeState(LocalizedMessageParser.parse(userInput));
+  public List<Object> onEnterMessageParams() {
+    return List.of(remaining.getFirst());
+  }
 
-    } catch (Exception e) {
+  @Override
+  public BotSessionState nextState(Message message) {
+    if (!message.hasText()) {
       return this;
     }
+
+    var currentLocale = remaining.getFirst();
+    var newCollected = new ArrayList<>(collected);
+    newCollected.add(new LocalizedMessageDto(currentLocale, message.getText()));
+
+    var newRemaining = remaining.subList(1, remaining.size());
+
+    if (!newRemaining.isEmpty()) {
+      return new NewsletterMessageState(name, List.copyOf(newRemaining), List.copyOf(newCollected));
+    }
+
+    return new NewsletterPhotoState(name, List.copyOf(newCollected));
   }
 }

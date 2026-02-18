@@ -50,6 +50,11 @@ app:
         secret-token: ${TELEGRAM_WEBHOOK_SECRET_TOKEN_DEV}
       mini-app:
         url: https://t.me/solo_level_bot/app
+    rate-limit:
+      send-message:
+        global: 30
+        per-chat: 1
+        period-seconds: 1
   cache:
     redis:
       default-ttl: 1h

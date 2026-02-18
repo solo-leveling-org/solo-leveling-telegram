@@ -2,3 +2,7 @@ databaseChangeLog:
   # v1
   - include:
       file: db/changelog/v1/09-12-2025--user-tables-initialize.yml
+
+  # v2
+  - include:
+      file: db/changelog/v2/18-02-2026--scheduled-broadcast.yml

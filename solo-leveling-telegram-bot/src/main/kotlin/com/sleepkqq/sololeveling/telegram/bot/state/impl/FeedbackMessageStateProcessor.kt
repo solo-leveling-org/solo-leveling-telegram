@@ -4,6 +4,7 @@ import com.sleepkqq.sololeveling.telegram.bot.service.user.UserFeedbackService
 import com.sleepkqq.sololeveling.telegram.bot.state.StateProcessor
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.feedback.FeedbackMessageState
 import org.springframework.stereotype.Component
+import org.telegram.telegrambots.meta.api.objects.message.Message
 import kotlin.reflect.KClass
 
 @Component
@@ -13,7 +14,12 @@ class FeedbackMessageStateProcessor(
 
 	override fun getStateClass(): KClass<FeedbackMessageState> = FeedbackMessageState::class
 
-	override fun process(userId: Long, userInput: String, state: FeedbackMessageState) {
-		userFeedbackService.create(userId, userInput)
+	override fun process(message: Message, state: FeedbackMessageState): Boolean {
+		if (!message.hasText()) {
+			return false
+		}
+
+		userFeedbackService.create(message.chatId, message.text)
+		return true
 	}
 }

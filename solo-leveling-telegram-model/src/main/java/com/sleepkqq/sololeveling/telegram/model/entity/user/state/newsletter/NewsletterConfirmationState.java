@@ -5,13 +5,21 @@ import com.sleepkqq.sololeveling.telegram.keyboard.Keyboard;
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import one.util.streamex.StreamEx;
 
 @JsonTypeName("NewsletterConfirmationState")
 public record NewsletterConfirmationState(
+    String name,
     List<LocalizedMessageDto> localizations,
+    String fileId,
     Instant scheduledAt
 ) implements BotSessionState {
+
+  private static final DateTimeFormatter FORMATTER =
+      DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZoneOffset.UTC);
 
   @Override
   public LocalizationCode onEnterMessageCode() {
@@ -25,7 +33,13 @@ public record NewsletterConfirmationState(
 
   @Override
   public List<Object> onEnterMessageParams() {
-    return List.of(localizations, scheduledAt);
+    var formattedLocalizations = StreamEx.of(localizations)
+        .map(l -> "\n  [%s]: %s".formatted(l.locale(), l.text()))
+        .joining();
+    var formattedFileId = fileId != null ? "✅" : "❌";
+    var formattedDate = FORMATTER.format(scheduledAt) + " (UTC)";
+
+    return List.of(name, formattedLocalizations, formattedFileId, formattedDate);
   }
 
   @Override
@@ -35,6 +49,6 @@ public record NewsletterConfirmationState(
 
   @Override
   public List<Object> onExitMessageParams() {
-    return List.of(localizations, scheduledAt);
+    return List.of(name, FORMATTER.format(scheduledAt) + " (UTC)");
   }
 }

@@ -1,10 +1,12 @@
 package com.sleepkqq.sololeveling.telegram.bot.service.message
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.sleepkqq.sololeveling.telegram.bot.config.TelegramBotProperties
+import com.sleepkqq.sololeveling.telegram.bot.config.properties.TelegramBotProperties
+import com.sleepkqq.sololeveling.telegram.bot.config.properties.TelegramRateLimitProperties
 import io.github.bucket4j.Bandwidth
 import io.github.bucket4j.Bucket
 import org.slf4j.LoggerFactory
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -19,8 +21,10 @@ import java.time.Duration
 import java.util.concurrent.ConcurrentHashMap
 
 @Service
+@EnableConfigurationProperties(TelegramRateLimitProperties::class)
 class TelegramMessageSender(
 	private val telegramBotProperties: TelegramBotProperties,
+	telegramRateLimitProperties: TelegramRateLimitProperties,
 	private val restTemplate: RestTemplate,
 	private val objectMapper: ObjectMapper
 ) {
@@ -29,11 +33,6 @@ class TelegramMessageSender(
 		// API methods
 		const val SEND_MESSAGE = "sendMessage"
 		const val SEND_PHOTO = "sendPhoto"
-
-		// Rate limits
-		const val RATE_LIMIT_GLOBAL = 30L
-		const val RATE_LIMIT_PER_CHAT = 1L
-		const val RATE_LIMIT_PERIOD_SECONDS = 1L
 
 		// Request parameters
 		const val PARAM_CHAT_ID = "chat_id"
@@ -45,7 +44,9 @@ class TelegramMessageSender(
 
 	private val log = LoggerFactory.getLogger(javaClass)
 
-	private val globalBucket: Bucket = createBucket(RATE_LIMIT_GLOBAL)
+	private val sendMessageRateLimit: TelegramRateLimitProperties.SendMessageRateLimit =
+		telegramRateLimitProperties.sendMessage
+	private val globalBucket: Bucket = createBucket(sendMessageRateLimit.global)
 	private val perChatBuckets = ConcurrentHashMap<Long, Bucket>()
 
 	fun send(sendMessage: SendMessage) {
@@ -56,15 +57,14 @@ class TelegramMessageSender(
 	}
 
 	fun send(sendPhoto: SendPhoto) {
-		val chatId = sendPhoto.chatId.toLong()
-		executeWithRateLimit(chatId) {
+		executeWithRateLimit(sendPhoto.chatId.toLong()) {
 			sendPhotoRequest(sendPhoto)
 		}
 	}
 
 	private fun executeWithRateLimit(chatId: Long, action: () -> Unit) {
 		val chatBucket = perChatBuckets.computeIfAbsent(chatId) {
-			createBucket(RATE_LIMIT_PER_CHAT)
+			createBucket(sendMessageRateLimit.perChat)
 		}
 
 		globalBucket.asBlocking().consume(1)
@@ -136,13 +136,12 @@ class TelegramMessageSender(
 			.addLimit(
 				Bandwidth.builder()
 					.capacity(capacity)
-					.refillGreedy(capacity, Duration.ofSeconds(RATE_LIMIT_PERIOD_SECONDS))
+					.refillGreedy(capacity, Duration.ofSeconds(sendMessageRateLimit.periodSeconds))
 					.build()
 			)
 			.build()
 	}
 
-	private fun buildApiUrl(method: String): String {
-		return "${telegramBotProperties.api.url}${telegramBotProperties.token}/$method"
-	}
+	private fun buildApiUrl(method: String): String =
+		"${telegramBotProperties.api.url}${telegramBotProperties.token}/$method"
 }

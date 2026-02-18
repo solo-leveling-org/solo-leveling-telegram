@@ -19,6 +19,13 @@
       <version>${project.version}</version>
     </dependency>
 
+    <!-- telegrambots -->
+    <dependency>
+      <groupId>org.telegram</groupId>
+      <artifactId>telegrambots-meta</artifactId>
+      <version>${telegrambots.version}</version>
+    </dependency>
+
     <!-- database -->
     <dependency>
       <groupId>org.postgresql</groupId>
