@@ -18,7 +18,6 @@ class RetryConfig(
 
 	@Bean
 	fun telegramRetryTemplate(): RetryTemplate = RetryTemplate.builder()
-		.maxAttempts(telegramRetryProperties.maxAttempts)
 		.exponentialBackoff(
 			telegramRetryProperties.initialInterval,
 			telegramRetryProperties.multiplier,

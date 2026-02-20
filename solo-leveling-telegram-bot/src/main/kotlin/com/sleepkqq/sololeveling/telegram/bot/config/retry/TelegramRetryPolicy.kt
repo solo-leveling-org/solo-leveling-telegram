@@ -9,6 +9,7 @@ class TelegramRetryPolicy(maxAttempts: Int) : SimpleRetryPolicy(maxAttempts) {
 
 	override fun canRetry(context: RetryContext): Boolean {
 		val throwable = context.lastThrowable
+			?: return super.canRetry(context)
 
 		if (throwable is TelegramApiRequestException) {
 			return when (throwable.errorCode) {
