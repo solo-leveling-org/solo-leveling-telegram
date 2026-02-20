@@ -13,6 +13,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException
 import java.util.*
 
 @Component
@@ -72,7 +73,14 @@ class BroadcastExecutor(
 		true
 
 	} catch (e: Exception) {
-		log.warn("Failed to send message to user ${user.id}", e)
+		when (e) {
+			is TelegramApiRequestException -> log.warn(
+				"Failed to send to userId={}: [{}] {}",
+				user.id, e.errorCode, e.apiResponse
+			)
+
+			else -> log.warn("Failed to send to userId={}", user.id, e)
+		}
 		false
 	}
 
