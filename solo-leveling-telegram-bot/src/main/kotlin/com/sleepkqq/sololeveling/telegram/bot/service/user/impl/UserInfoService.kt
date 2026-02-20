@@ -21,7 +21,7 @@ class UserInfoService(
 	private val log = LoggerFactory.getLogger(javaClass)
 
 	@Cacheable(
-		value = ["user-info"],
+		value = ["USER_INFO"],
 		key = "#userId",
 		unless = "#result == null"
 	)

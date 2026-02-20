@@ -174,24 +174,22 @@ class TelegramMessageFactory(
 		text: String,
 		keyboard: Keyboard? = null,
 		locale: Locale? = null
-	): EditMessageText =
-		EditMessageText.builder()
-			.chatId(chatId.toString())
-			.messageId(messageId)
-			.text(text)
-			.parseMode(HTML_MODE)
-			.apply {
-				keyboard?.let {
-					replyMarkup(i18nService.buildKeyboard(it, locale = locale))
-				}
+	): EditMessageText = EditMessageText.builder()
+		.chatId(chatId.toString())
+		.messageId(messageId)
+		.text(text)
+		.parseMode(HTML_MODE)
+		.apply {
+			keyboard?.let {
+				replyMarkup(i18nService.buildKeyboard(it, locale = locale))
 			}
-			.build()
+		}
+		.build()
 
 	// ============ DeleteMessage ============
 
-	fun deleteMessage(chatId: Long, messageId: Int): DeleteMessage =
-		DeleteMessage.builder()
-			.chatId(chatId.toString())
-			.messageId(messageId)
-			.build()
+	fun deleteMessage(chatId: Long, messageId: Int): DeleteMessage = DeleteMessage.builder()
+		.chatId(chatId.toString())
+		.messageId(messageId)
+		.build()
 }

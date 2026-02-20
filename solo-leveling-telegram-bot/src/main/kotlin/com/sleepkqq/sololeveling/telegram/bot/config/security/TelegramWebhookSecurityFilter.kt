@@ -15,7 +15,7 @@ class TelegramWebhookSecurityFilter(
 
 	private val log = LoggerFactory.getLogger(javaClass)
 
-	companion object {
+	private companion object {
 		const val TELEGRAM_SECRET_TOKEN_HEADER = "X-Telegram-Bot-Api-Secret-Token"
 	}
 

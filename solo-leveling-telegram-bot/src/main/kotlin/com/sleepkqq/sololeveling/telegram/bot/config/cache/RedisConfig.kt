@@ -26,19 +26,16 @@ class RedisConfig(
 	fun redisCacheManagerBuilderCustomizer() = RedisCacheManagerBuilderCustomizer { builder ->
 		builder.cacheDefaults(createDefaultCacheConfig())
 
-		val configMap = cacheProperties.caches.mapValues { (name, config) ->
-			when (name) {
-				"user-info" -> createProtoCacheConfig(
-					ttl = config.ttl,
-					nullable = config.nullable,
-					serializer = ProtobufRedisSerializer(
-						GetUserAdditionalInfoResponse.getDefaultInstance()
+		val configMap = cacheProperties.caches.entries
+			.associate { (key, config) ->
+				key.name to when (key) {
+					RedisCacheProperties.CacheKey.USER_INFO -> createProtoCacheConfig(
+						ttl = config.ttl,
+						nullable = config.nullable,
+						serializer = ProtobufRedisSerializer(GetUserAdditionalInfoResponse.getDefaultInstance())
 					)
-				)
-
-				else -> createCacheConfig(config.ttl, config.nullable)
+				}
 			}
-		}
 
 		builder.withInitialCacheConfigurations(configMap)
 	}

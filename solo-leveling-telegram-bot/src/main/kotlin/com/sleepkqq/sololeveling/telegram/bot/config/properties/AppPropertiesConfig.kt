@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration
 @EnableConfigurationProperties(
 	TelegramBotProperties::class,
 	TelegramRateLimitProperties::class,
+	TelegramRetryProperties::class,
 	RedisCacheProperties::class,
 	GrpcPlayerServiceProperties::class
 )

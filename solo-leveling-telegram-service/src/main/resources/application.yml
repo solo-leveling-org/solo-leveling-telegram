@@ -16,9 +16,16 @@ spring:
     redis:
       host: localhost
       port: 6379
+      connect-timeout: 2000
+      timeout: 2000
       lettuce:
         pool:
-          max-active: 8
+          enabled: true
+          max-active: 16
+          max-idle: 8
+          min-idle: 4
+          max-wait: 2000ms
+          time-between-eviction-runs: 30s
   cache:
     type: redis
   profiles:
@@ -51,13 +58,17 @@ app:
       mini-app:
         url: https://t.me/solo_level_bot/app
     rate-limit:
-      send-message:
-        global: 30
-        per-chat: 1
-        period: PT1S
-        bucket-ttl: PT10M
-        global-key: "rate_limit:telegram:global"
-        chat-key-prefix: "rate_limit:telegram:chat:"
+      global: 25
+      per-chat: 1
+      period: PT1S
+      bucket-ttl: PT10M
+      global-key: "rate_limit:telegram:global"
+      chat-key-prefix: "rate_limit:telegram:chat:"
+    retry:
+      max-attempts: 3
+      initial-interval: PT1S
+      multiplier: 2.0
+      max-interval: PT30S
   cache:
     redis:
       default-ttl: 1h
