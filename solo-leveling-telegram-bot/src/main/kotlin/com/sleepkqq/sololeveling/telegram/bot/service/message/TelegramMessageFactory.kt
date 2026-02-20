@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 import org.telegram.telegrambots.meta.api.objects.InputFile
+import org.telegram.telegrambots.meta.api.objects.LinkPreviewOptions
 import java.util.Locale
 
 @Service
@@ -22,6 +23,10 @@ class TelegramMessageFactory(
 
 	private companion object {
 		const val HTML_MODE = "HTML"
+
+		val NO_LINK_PREVIEW: LinkPreviewOptions = LinkPreviewOptions.builder()
+			.isDisabled(true)
+			.build()
 	}
 
 	// ============ SendMessage ============
@@ -65,6 +70,7 @@ class TelegramMessageFactory(
 		.chatId(chatId.toString())
 		.text(text)
 		.parseMode(HTML_MODE)
+		.linkPreviewOptions(NO_LINK_PREVIEW)
 		.apply { keyboard?.let { replyMarkup(i18nService.buildKeyboard(it, locale = locale)) } }
 		.build()
 
@@ -179,6 +185,7 @@ class TelegramMessageFactory(
 		.messageId(messageId)
 		.text(text)
 		.parseMode(HTML_MODE)
+		.linkPreviewOptions(NO_LINK_PREVIEW)
 		.apply {
 			keyboard?.let {
 				replyMarkup(i18nService.buildKeyboard(it, locale = locale))
