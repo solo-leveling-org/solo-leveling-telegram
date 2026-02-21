@@ -42,10 +42,27 @@
       <version>${kotlin.version}</version>
     </dependency>
 
+    <!-- coroutines -->
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-core</artifactId>
+      <version>${kotlinx-coroutines.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlinx</groupId>
+      <artifactId>kotlinx-coroutines-jdk8</artifactId>
+      <version>${kotlinx-coroutines.version}</version>
+    </dependency>
+
     <!-- telegrambots -->
     <dependency>
       <groupId>org.telegram</groupId>
       <artifactId>telegrambots-springboot-webhook-starter</artifactId>
+      <version>${telegrambots.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.telegram</groupId>
+      <artifactId>telegrambots-client</artifactId>
       <version>${telegrambots.version}</version>
     </dependency>
 
@@ -81,11 +98,15 @@
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-pool2</artifactId>
+    </dependency>
 
     <!-- utils -->
     <dependency>
       <groupId>com.bucket4j</groupId>
-      <artifactId>bucket4j-core</artifactId>
+      <artifactId>bucket4j_jdk17-lettuce</artifactId>
       <version>${bucket4j.version}</version>
     </dependency>
   </dependencies>

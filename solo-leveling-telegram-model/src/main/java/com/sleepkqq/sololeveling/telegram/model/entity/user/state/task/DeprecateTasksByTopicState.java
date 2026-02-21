@@ -1,11 +1,10 @@
 package com.sleepkqq.sololeveling.telegram.model.entity.user.state.task;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
 import com.sleepkqq.sololeveling.telegram.task.TaskTopic;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 
-@JsonTypeName("DeprecateTasksByTopicState")
 public record DeprecateTasksByTopicState() implements BotSessionState {
 
   @Override
@@ -14,9 +13,9 @@ public record DeprecateTasksByTopicState() implements BotSessionState {
   }
 
   @Override
-  public BotSessionState nextState(String userInput) {
+  public BotSessionState nextState(Message message) {
     try {
-      var taskTopic = TaskTopic.valueOf(userInput);
+      var taskTopic = TaskTopic.valueOf(message.getText());
       return new DeprecateTasksByTopicConfirmationState(taskTopic);
 
     } catch (IllegalArgumentException e) {

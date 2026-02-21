@@ -5,9 +5,7 @@ import org.babyfish.jimmer.sql.MappedSuperclass;
 import org.babyfish.jimmer.sql.Version;
 
 @MappedSuperclass
-public interface Model {
-
-  Instant createdAt();
+public interface Model extends Auditable {
 
   Instant updatedAt();
 

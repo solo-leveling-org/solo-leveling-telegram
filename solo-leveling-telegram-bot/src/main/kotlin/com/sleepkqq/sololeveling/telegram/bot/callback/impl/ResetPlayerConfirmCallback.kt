@@ -2,9 +2,10 @@ package com.sleepkqq.sololeveling.telegram.bot.callback.impl
 
 import com.sleepkqq.sololeveling.telegram.bot.callback.Callback
 import com.sleepkqq.sololeveling.telegram.bot.grpc.client.PlayerApi
-import com.sleepkqq.sololeveling.telegram.bot.service.localization.I18nService
+import com.sleepkqq.sololeveling.telegram.bot.service.localization.impl.PhotoSource
+import com.sleepkqq.sololeveling.telegram.bot.service.message.TelegramMessageFactory
 import com.sleepkqq.sololeveling.telegram.bot.service.message.TelegramMessageSender
-import com.sleepkqq.sololeveling.telegram.bot.service.user.UserInfoService
+import com.sleepkqq.sololeveling.telegram.bot.service.user.impl.UserInfoService
 import com.sleepkqq.sololeveling.telegram.bot.service.user.UserSessionService
 import com.sleepkqq.sololeveling.telegram.callback.CallbackAction
 import com.sleepkqq.sololeveling.telegram.image.Image
@@ -23,7 +24,7 @@ class ResetPlayerConfirmCallback(
 	private val userSessionService: UserSessionService,
 	private val playerApi: PlayerApi,
 	private val userInfoService: UserInfoService,
-	private val i18nService: I18nService,
+	private val telegramMessageFactory: TelegramMessageFactory,
 	private val telegramMessageSender: TelegramMessageSender
 ) : Callback {
 
@@ -40,7 +41,7 @@ class ResetPlayerConfirmCallback(
 		log.info("Admin reset confirmation received from adminId=$adminId (@$adminUsername)")
 
 		val state = session.state() as? ResetPlayerConfirmationState
-			?: return i18nService.deleteMessage(adminId, messageId)
+			?: return telegramMessageFactory.deleteMessage(adminId, messageId)
 
 		val playerId = state.id
 
@@ -53,20 +54,20 @@ class ResetPlayerConfirmCallback(
 		val additionalInfo = userInfoService.getUserAdditionalInfo(playerId)
 		val playerLocale = Locale.forLanguageTag(additionalInfo.locale.tag)
 
-		val sendPhoto = i18nService.sendPhoto(
-			playerId,
-			Image.RESET_PLAYER,
-			LocalizationCode.INFO_PLAYER_RESET,
+		val sendPhoto = telegramMessageFactory.sendPhoto(
+			chatId = playerId,
+			source = PhotoSource.Resource(Image.RESET_PLAYER),
+			code = LocalizationCode.INFO_PLAYER_RESET,
 			locale = playerLocale
 		)
 		telegramMessageSender.send(sendPhoto)
 
 		userSessionService.idleState(adminId)
 
-		return i18nService.editMessageText(
-			adminId,
-			messageId,
-			session.state().onExitLocalized()!!
+		return telegramMessageFactory.editMessageText(
+			chatId = adminId,
+			messageId = messageId,
+			localized = session.state().onExitLocalized()!!
 		)
 	}
 }

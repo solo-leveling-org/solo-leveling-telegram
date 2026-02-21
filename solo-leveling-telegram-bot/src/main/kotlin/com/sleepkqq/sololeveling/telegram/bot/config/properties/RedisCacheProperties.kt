@@ -1,4 +1,4 @@
-package com.sleepkqq.sololeveling.telegram.bot.config.cache
+package com.sleepkqq.sololeveling.telegram.bot.config.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import java.time.Duration
@@ -6,8 +6,12 @@ import java.time.Duration
 @ConfigurationProperties(prefix = "app.cache.redis")
 data class RedisCacheProperties(
 	val defaultTtl: Duration = Duration.ofHours(1),
-	val caches: Map<String, CacheProperties> = emptyMap()
+	val caches: Map<CacheKey, CacheProperties> = emptyMap()
 ) {
+
+	enum class CacheKey {
+		USER_INFO
+	}
 
 	data class CacheProperties(
 		val ttl: Duration,

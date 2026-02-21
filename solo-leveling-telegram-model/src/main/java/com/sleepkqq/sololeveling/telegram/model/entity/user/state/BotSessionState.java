@@ -6,6 +6,11 @@ import com.sleepkqq.sololeveling.telegram.keyboard.Keyboard;
 import com.sleepkqq.sololeveling.telegram.localization.Localized;
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.feedback.FeedbackMessageState;
+import com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter.NewsletterConfirmationState;
+import com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter.NewsletterDateTimeState;
+import com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter.NewsletterMessageState;
+import com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter.NewsletterNameState;
+import com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter.NewsletterPhotoState;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.player.ResetPlayerConfirmationState;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.task.DeprecateAllTasksConfirmationState;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.task.DeprecateTasksByTopicConfirmationState;
@@ -16,6 +21,7 @@ import com.sleepkqq.sololeveling.telegram.model.entity.user.state.transfer.Trans
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
@@ -27,7 +33,12 @@ import org.jetbrains.annotations.Nullable;
     @JsonSubTypes.Type(value = DeprecateTasksByTopicConfirmationState.class, name = "DeprecateTasksByTopicConfirmationState"),
     @JsonSubTypes.Type(value = DeprecateTasksByTopicState.class, name = "DeprecateTasksByTopicState"),
     @JsonSubTypes.Type(value = DeprecateAllTasksConfirmationState.class, name = "DeprecateAllTasksConfirmationState"),
-    @JsonSubTypes.Type(value = ResetPlayerConfirmationState.class, name = "ResetPlayerConfirmationState")
+    @JsonSubTypes.Type(value = ResetPlayerConfirmationState.class, name = "ResetPlayerConfirmationState"),
+    @JsonSubTypes.Type(value = NewsletterNameState.class, name = "NewsletterNameState"),
+    @JsonSubTypes.Type(value = NewsletterMessageState.class, name = "NewsletterMessageState"),
+    @JsonSubTypes.Type(value = NewsletterPhotoState.class, name = "NewsletterPhotoState"),
+    @JsonSubTypes.Type(value = NewsletterDateTimeState.class, name = "NewsletterDateTimeState"),
+    @JsonSubTypes.Type(value = NewsletterConfirmationState.class, name = "NewsletterConfirmationState")
 })
 public interface BotSessionState {
 
@@ -123,7 +134,7 @@ public interface BotSessionState {
   /**
    * Обработка пользовательского ввода и переход в следующее состояние
    */
-  default BotSessionState nextState(String userInput) {
+  default BotSessionState nextState(Message message) {
     return new IdleState();
   }
 }

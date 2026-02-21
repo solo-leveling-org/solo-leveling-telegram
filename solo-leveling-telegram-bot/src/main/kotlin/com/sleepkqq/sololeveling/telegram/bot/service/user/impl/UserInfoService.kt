@@ -1,4 +1,4 @@
-package com.sleepkqq.sololeveling.telegram.bot.service.user
+package com.sleepkqq.sololeveling.telegram.bot.service.user.impl
 
 import com.sleepkqq.sololeveling.proto.user.GetUserAdditionalInfoResponse
 import com.sleepkqq.sololeveling.proto.user.UserLocale
@@ -21,7 +21,7 @@ class UserInfoService(
 	private val log = LoggerFactory.getLogger(javaClass)
 
 	@Cacheable(
-		value = ["user-info"],
+		value = ["USER_INFO"],
 		key = "#userId",
 		unless = "#result == null"
 	)

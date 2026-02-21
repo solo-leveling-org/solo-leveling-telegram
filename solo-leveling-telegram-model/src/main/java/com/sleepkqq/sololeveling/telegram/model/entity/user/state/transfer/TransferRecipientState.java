@@ -1,10 +1,9 @@
 package com.sleepkqq.sololeveling.telegram.model.entity.user.state.transfer;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
+import org.telegram.telegrambots.meta.api.objects.message.Message;
 
-@JsonTypeName("WaitingRecipientState")
 public record TransferRecipientState(long amount) implements BotSessionState {
 
   @Override
@@ -13,11 +12,17 @@ public record TransferRecipientState(long amount) implements BotSessionState {
   }
 
   @Override
-  public BotSessionState nextState(String userInput) {
-    if (!userInput.startsWith("@")) {
+  public BotSessionState nextState(Message message) {
+    if (!message.hasText() || !message.getText().startsWith("@")) {
       return this;
     }
 
-    return new TransferConfirmationState(amount, userInput);
+    var text = message.getText();
+    var recipient = text.substring(1);
+    if (recipient.isEmpty()) {
+      return this;
+    }
+
+    return new TransferConfirmationState(amount, recipient);
   }
 }

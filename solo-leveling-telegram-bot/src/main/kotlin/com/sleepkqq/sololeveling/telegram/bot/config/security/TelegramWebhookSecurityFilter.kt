@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import com.sleepkqq.sololeveling.telegram.bot.config.TelegramBotProperties
+import com.sleepkqq.sololeveling.telegram.bot.config.properties.TelegramBotProperties
 
 @Component
 class TelegramWebhookSecurityFilter(
@@ -15,7 +15,7 @@ class TelegramWebhookSecurityFilter(
 
 	private val log = LoggerFactory.getLogger(javaClass)
 
-	companion object {
+	private companion object {
 		const val TELEGRAM_SECRET_TOKEN_HEADER = "X-Telegram-Bot-Api-Secret-Token"
 	}
 

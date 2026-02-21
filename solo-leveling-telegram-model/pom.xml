@@ -19,6 +19,13 @@
       <version>${project.version}</version>
     </dependency>
 
+    <!-- telegrambots -->
+    <dependency>
+      <groupId>org.telegram</groupId>
+      <artifactId>telegrambots-meta</artifactId>
+      <version>${telegrambots.version}</version>
+    </dependency>
+
     <!-- database -->
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -43,6 +50,11 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>one.util</groupId>
+      <artifactId>streamex</artifactId>
+      <version>${streamex.version}</version>
     </dependency>
   </dependencies>
 
