@@ -13,12 +13,18 @@ public record TransferAmountState() implements BotSessionState {
 
   @Override
   public BotSessionState nextState(Message message) {
+    if (!message.hasText()) {
+      return this;
+    }
+
     try {
       var amount = Long.parseLong(message.getText());
       if (amount <= 0) {
         return this;
       }
+
       return new TransferRecipientState(amount);
+
     } catch (NumberFormatException e) {
       return this;
     }

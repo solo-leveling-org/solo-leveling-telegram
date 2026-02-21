@@ -2,7 +2,7 @@ package com.sleepkqq.sololeveling.telegram.model.entity.broadcast;
 
 import com.sleepkqq.sololeveling.telegram.model.entity.Model;
 import com.sleepkqq.sololeveling.telegram.model.entity.broadcast.enums.BroadcastStatus;
-import com.sleepkqq.sololeveling.telegram.model.entity.localziation.LocalizedMessage;
+import com.sleepkqq.sololeveling.telegram.model.entity.localization.LocalizedMessage;
 import java.time.Instant;
 import java.util.UUID;
 import org.babyfish.jimmer.sql.*;

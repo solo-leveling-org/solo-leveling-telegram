@@ -1,7 +1,7 @@
-package com.sleepkqq.sololeveling.telegram.model.entity.localziation;
+package com.sleepkqq.sololeveling.telegram.model.entity.localization;
 
 import com.sleepkqq.sololeveling.telegram.model.entity.broadcast.ScheduledBroadcast;
-import com.sleepkqq.sololeveling.telegram.model.entity.localziation.enums.MessageLocale;
+import com.sleepkqq.sololeveling.telegram.model.entity.localization.enums.MessageLocale;
 import java.util.UUID;
 import org.babyfish.jimmer.sql.*;
 import org.babyfish.jimmer.sql.meta.UUIDIdGenerator;

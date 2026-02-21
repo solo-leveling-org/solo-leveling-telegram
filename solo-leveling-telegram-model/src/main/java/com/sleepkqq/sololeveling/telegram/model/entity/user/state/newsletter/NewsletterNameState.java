@@ -1,7 +1,7 @@
 package com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter;
 
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
-import com.sleepkqq.sololeveling.telegram.model.entity.localziation.enums.MessageLocale;
+import com.sleepkqq.sololeveling.telegram.model.entity.localization.enums.MessageLocale;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
 import java.util.List;
 import one.util.streamex.StreamEx;

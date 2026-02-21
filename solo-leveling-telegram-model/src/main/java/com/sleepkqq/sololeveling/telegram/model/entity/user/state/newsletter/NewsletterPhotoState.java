@@ -19,22 +19,15 @@ public record NewsletterPhotoState(
 
   @Override
   public BotSessionState nextState(Message message) {
-    if (!message.hasPhoto()) {
-      if (!message.hasText()) {
-        return this;
-      }
-
-      if (message.getText().contains(SKIP)) {
-        return new NewsletterDateTimeState(name, localizations, null);
-      }
+    if (message.hasText() && message.getText().toLowerCase().contains(SKIP)) {
+      return new NewsletterDateTimeState(name, localizations, null);
     }
 
-    try {
+    if (message.hasPhoto()) {
       var fileId = message.getPhoto().getLast().getFileId();
       return new NewsletterDateTimeState(name, localizations, fileId);
-
-    } catch (Exception e) {
-      return this;
     }
+
+    return this;
   }
 }

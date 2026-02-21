@@ -13,10 +13,16 @@ public record TransferRecipientState(long amount) implements BotSessionState {
 
   @Override
   public BotSessionState nextState(Message message) {
-    if (!message.getText().startsWith("@")) {
+    if (!message.hasText() || !message.getText().startsWith("@")) {
       return this;
     }
 
-    return new TransferConfirmationState(amount, message.getText().substring(1));
+    var text = message.getText();
+    var recipient = text.substring(1);
+    if (recipient.isEmpty()) {
+      return this;
+    }
+
+    return new TransferConfirmationState(amount, recipient);
   }
 }

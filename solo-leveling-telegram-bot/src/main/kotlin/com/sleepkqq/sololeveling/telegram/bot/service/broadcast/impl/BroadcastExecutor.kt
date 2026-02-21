@@ -6,7 +6,7 @@ import com.sleepkqq.sololeveling.telegram.bot.service.message.TelegramMessageFac
 import com.sleepkqq.sololeveling.telegram.bot.service.message.TelegramMessageSender
 import com.sleepkqq.sololeveling.telegram.keyboard.Keyboard
 import com.sleepkqq.sololeveling.telegram.model.entity.broadcast.dto.ScheduledBroadcastView
-import com.sleepkqq.sololeveling.telegram.model.entity.localziation.LocalizedMessage
+import com.sleepkqq.sololeveling.telegram.model.entity.localization.LocalizedMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
