@@ -1,6 +1,7 @@
 package com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter;
 
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
+import com.sleepkqq.sololeveling.telegram.localization.StateCode;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
 import java.util.List;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
@@ -14,7 +15,7 @@ public record NewsletterPhotoState(
 
   @Override
   public LocalizationCode onEnterMessageCode() {
-    return LocalizationCode.STATE_NEWSLETTER_PHOTO_ENTER;
+    return StateCode.NEWSLETTER_PHOTO_ENTER;
   }
 
   @Override

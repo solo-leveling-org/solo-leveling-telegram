@@ -47,7 +47,7 @@
     <kotlinx-coroutines.version>1.10.2</kotlinx-coroutines.version>
 
     <!-- solo leveling -->
-    <solo-leveling-lib.version>1.6.6</solo-leveling-lib.version>
+    <solo-leveling-lib.version>1.6.7</solo-leveling-lib.version>
 
     <!-- grpc -->
     <spring-grpc.version>0.11.0</spring-grpc.version>

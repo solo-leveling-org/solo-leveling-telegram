@@ -4,7 +4,7 @@ import com.sleepkqq.sololeveling.telegram.bot.handler.MessageHandler
 import com.sleepkqq.sololeveling.telegram.bot.service.message.TelegramMessageFactory
 import com.sleepkqq.sololeveling.telegram.bot.service.user.UserSessionService
 import com.sleepkqq.sololeveling.telegram.bot.state.StateProcessor
-import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
+import com.sleepkqq.sololeveling.telegram.localization.StateCode
 import com.sleepkqq.sololeveling.telegram.model.entity.Immutables
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState
 import org.springframework.stereotype.Component
@@ -28,7 +28,7 @@ class StateMessageHandler(
 
 	override fun handle(message: Message): BotApiMethod<*>? {
 		val session = userSessionService.find(message.chatId)
-			?: return telegramMessageFactory.sendMessage(message.chatId, LocalizationCode.STATE_IDLE)
+			?: return telegramMessageFactory.sendMessage(message.chatId, StateCode.IDLE)
 
 		val currentState = session.state()
 

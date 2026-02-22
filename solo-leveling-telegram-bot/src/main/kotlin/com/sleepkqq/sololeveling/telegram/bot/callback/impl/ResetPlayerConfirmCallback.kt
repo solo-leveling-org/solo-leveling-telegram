@@ -9,9 +9,12 @@ import com.sleepkqq.sololeveling.telegram.bot.service.user.impl.UserInfoService
 import com.sleepkqq.sololeveling.telegram.bot.service.user.UserSessionService
 import com.sleepkqq.sololeveling.telegram.callback.CallbackAction
 import com.sleepkqq.sololeveling.telegram.image.Image
-import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
+import com.sleepkqq.sololeveling.telegram.localization.ErrorCode
+import com.sleepkqq.sololeveling.telegram.localization.InfoCode
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserSession
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.player.ResetPlayerConfirmationState
+import io.grpc.Status
+import io.grpc.StatusRuntimeException
 import org.slf4j.LoggerFactory
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Component
@@ -32,42 +35,64 @@ class ResetPlayerConfirmCallback(
 
 	private val log = LoggerFactory.getLogger(javaClass)
 
-	@PreAuthorize("hasAuthority('ADMIN')")
+	@PreAuthorize("hasAuthority('DEVELOPER')")
 	override fun handle(callbackQuery: CallbackQuery, session: UserSession): BotApiMethod<*>? {
-		val adminId = callbackQuery.from.id
-		val adminUsername = callbackQuery.from.userName ?: "unknown"
+		val userId = callbackQuery.from.id
 		val messageId = callbackQuery.message.messageId
 
-		log.info("Admin reset confirmation received from adminId=$adminId (@$adminUsername)")
-
 		val state = session.state() as? ResetPlayerConfirmationState
-			?: return telegramMessageFactory.deleteMessage(adminId, messageId)
+			?: return telegramMessageFactory.deleteMessage(userId, messageId)
 
-		val playerId = state.id
+		return executeReset(userId, messageId, state)
+	}
 
-		log.info("Starting player reset: playerId=$playerId, requestedBy=adminId:$adminId (@$adminUsername)")
+	private fun executeReset(
+		userId: Long,
+		messageId: Int,
+		state: ResetPlayerConfirmationState
+	): BotApiMethod<*>? {
+		val resetUserId = state.id
+		log.info("Resetting player={}, requestedBy={}", resetUserId, userId)
 
-		playerApi.resetPlayer(playerId)
+		try {
+			playerApi.resetPlayer(resetUserId)
 
-		log.info("Successfully reset player: playerId=$playerId, executedBy=adminId:$adminId (@$adminUsername)")
+		} catch (e: StatusRuntimeException) {
+			if (e.status.code == Status.Code.NOT_FOUND) {
+				userSessionService.idleState(userId)
 
-		val additionalInfo = userInfoService.getUserAdditionalInfo(playerId)
-		val playerLocale = Locale.forLanguageTag(additionalInfo.locale.tag)
+				return telegramMessageFactory.editMessageText(
+					chatId = userId,
+					messageId = messageId,
+					code = ErrorCode.USER_NOT_FOUND,
+					params = listOf(resetUserId)
+				)
+			}
 
-		val sendPhoto = telegramMessageFactory.sendPhoto(
-			chatId = playerId,
-			source = PhotoSource.Resource(Image.RESET_PLAYER),
-			code = LocalizationCode.INFO_PLAYER_RESET,
-			locale = playerLocale
-		)
-		telegramMessageSender.send(sendPhoto)
+			return null
+		}
 
-		userSessionService.idleState(adminId)
+		log.info("Successfully reset player={}", resetUserId)
+
+		notifyResetPlayer(resetUserId)
+		userSessionService.idleState(userId)
 
 		return telegramMessageFactory.editMessageText(
-			chatId = adminId,
+			chatId = userId,
 			messageId = messageId,
-			localized = session.state().onExitLocalized()!!
+			localized = state.onExitLocalized()!!
+		)
+	}
+
+	private fun notifyResetPlayer(resetUserId: Long) {
+		val tag = userInfoService.getUserAdditionalInfo(resetUserId).locale.tag
+		telegramMessageSender.send(
+			telegramMessageFactory.sendPhoto(
+				chatId = resetUserId,
+				source = PhotoSource.Resource(Image.RESET_PLAYER),
+				code = InfoCode.PLAYER_RESET,
+				locale = Locale.forLanguageTag(tag)
+			)
 		)
 	}
 }

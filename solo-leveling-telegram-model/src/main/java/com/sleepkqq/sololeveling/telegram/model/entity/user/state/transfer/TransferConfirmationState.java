@@ -1,6 +1,7 @@
 package com.sleepkqq.sololeveling.telegram.model.entity.user.state.transfer;
 
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
+import com.sleepkqq.sololeveling.telegram.localization.StateCode;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public record TransferConfirmationState(long amount, String recipientUsername)
 
   @Override
   public LocalizationCode onEnterMessageCode() {
-    return LocalizationCode.STATE_TRANSFER_CONFIRMATION;
+    return StateCode.TRANSFER_CONFIRMATION;
   }
 
   @Override

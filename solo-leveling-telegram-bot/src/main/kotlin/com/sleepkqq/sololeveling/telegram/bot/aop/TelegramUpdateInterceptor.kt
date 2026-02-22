@@ -3,12 +3,13 @@ package com.sleepkqq.sololeveling.telegram.bot.aop
 import com.sleepkqq.sololeveling.config.interceptor.UserContextHolder
 import com.sleepkqq.sololeveling.telegram.bot.service.auth.AuthService
 import com.sleepkqq.sololeveling.telegram.bot.service.message.TelegramMessageFactory
-import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
+import com.sleepkqq.sololeveling.telegram.localization.ErrorCode
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.slf4j.LoggerFactory
 import org.springframework.context.i18n.LocaleContextHolder
+import org.springframework.core.annotation.Order
 import org.springframework.security.authorization.AuthorizationDeniedException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
@@ -16,6 +17,7 @@ import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod
 import org.telegram.telegrambots.meta.api.objects.Update
 
 @Aspect
+@Order(10)
 @Component
 class TelegramUpdateInterceptor(
 	private val authService: AuthService,
@@ -38,7 +40,7 @@ class TelegramUpdateInterceptor(
 			val userId = UserContextHolder.getUserId()!!
 
 			log.warn("Authorization denied userId={}: {}", userId, e.message)
-			return telegramMessageFactory.sendMessage(userId, LocalizationCode.ERROR_ACCESS_DENIED)
+			return telegramMessageFactory.sendMessage(userId, ErrorCode.ACCESS_DENIED)
 
 		} catch (ex: Exception) {
 			log.error(

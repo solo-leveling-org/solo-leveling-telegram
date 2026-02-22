@@ -3,7 +3,7 @@ package com.sleepkqq.sololeveling.telegram.keyboard
 import com.sleepkqq.sololeveling.telegram.keyboard.KeyboardAction.Callback
 import com.sleepkqq.sololeveling.telegram.keyboard.KeyboardAction.Url
 import com.sleepkqq.sololeveling.telegram.callback.CallbackAction
-import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
+import com.sleepkqq.sololeveling.telegram.localization.ButtonCode
 
 enum class Keyboard(
 	val actions: List<KeyboardAction>
@@ -41,7 +41,7 @@ enum class Keyboard(
 	),
 	MINI_APP_LINK(
 		listOf(
-			Url(LocalizationCode.BUTTON_MINI_APP_LINK, "app.telegram.bot.mini-app.url")
+			Url(ButtonCode.MINI_APP_LINK, "app.telegram.bot.mini-app.url")
 		)
 	)
 }

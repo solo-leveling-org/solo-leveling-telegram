@@ -6,7 +6,7 @@ import com.sleepkqq.sololeveling.telegram.bot.command.interrupt.InterruptCommand
 import com.sleepkqq.sololeveling.telegram.bot.handler.MessageHandler
 import com.sleepkqq.sololeveling.telegram.bot.service.message.TelegramMessageFactory
 import com.sleepkqq.sololeveling.telegram.bot.service.user.UserSessionService
-import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
+import com.sleepkqq.sololeveling.telegram.localization.CommandCode
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod
 import org.telegram.telegrambots.meta.api.objects.message.Message
@@ -23,7 +23,7 @@ class CommandHandler(
 	override fun handle(message: Message): BotApiMethod<*>? {
 		val commandText = message.text.split(" ").first()
 		val command = commandsMap[commandText]
-			?: return telegramMessageFactory.sendMessage(message.chatId, LocalizationCode.CMD_UNKNOWN)
+			?: return telegramMessageFactory.sendMessage(message.chatId, CommandCode.UNKNOWN)
 
 		return when (command) {
 			is InfoCommand -> {
@@ -31,7 +31,7 @@ class CommandHandler(
 				telegramMessageFactory.sendMessage(message.chatId, result)
 			}
 
-			is InterruptCommand<*> -> {
+			is InterruptCommand -> {
 				val session = userSessionService.find(message.chatId)
 					?: userSessionService.register(message.chatId)
 

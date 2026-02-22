@@ -2,9 +2,11 @@ package com.sleepkqq.sololeveling.telegram.bot.service.auth
 
 import com.sleepkqq.sololeveling.config.interceptor.UserContextHolder
 import com.sleepkqq.sololeveling.telegram.bot.mapper.ProtoMapper
+import com.sleepkqq.sololeveling.telegram.bot.model.UserRole
 import com.sleepkqq.sololeveling.telegram.bot.service.user.impl.UserInfoService
 import org.slf4j.LoggerFactory
 import org.springframework.context.i18n.LocaleContextHolder
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
@@ -15,7 +17,8 @@ import org.telegram.telegrambots.meta.api.objects.User as TgUser
 @Service
 class AuthService(
 	private val userInfoService: UserInfoService,
-	private val protoMapper: ProtoMapper
+	private val protoMapper: ProtoMapper,
+	private val roleHierarchy: RoleHierarchy
 ) {
 
 	private val log = LoggerFactory.getLogger(javaClass)
@@ -58,4 +61,11 @@ class AuthService(
 
 	fun getCurrentUser(): User? =
 		SecurityContextHolder.getContext().authentication.principal as? User
+
+	fun hasRole(role: UserRole): Boolean {
+		val user = getCurrentUser() ?: return false
+		return roleHierarchy
+			.getReachableGrantedAuthorities(user.authorities)
+			.any { it.authority == role.name }
+	}
 }

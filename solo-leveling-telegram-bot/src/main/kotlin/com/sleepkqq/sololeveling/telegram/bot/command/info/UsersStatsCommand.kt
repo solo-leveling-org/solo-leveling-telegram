@@ -2,9 +2,10 @@ package com.sleepkqq.sololeveling.telegram.bot.command.info
 
 import com.sleepkqq.sololeveling.telegram.bot.command.info.InfoCommand.InfoCommandResult
 import com.sleepkqq.sololeveling.telegram.bot.grpc.client.UserApi
+import com.sleepkqq.sololeveling.telegram.bot.model.UserRole
 import com.sleepkqq.sololeveling.telegram.bot.service.user.UserFeedbackService
-import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
-import org.springframework.security.access.prepost.PreAuthorize
+import com.sleepkqq.sololeveling.telegram.localization.CommandCode
+import com.sleepkqq.sololeveling.telegram.localization.CommandDescriptionCode
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.objects.message.Message
 
@@ -15,10 +16,9 @@ class UsersStatsCommand(
 ) : InfoCommand {
 
 	override val command: String = "/users_stats"
+	override val description: CommandDescriptionCode = CommandDescriptionCode.USERS_STATS
+	override val requiredRole: UserRole = UserRole.MANAGER
 
-	override val visible: Boolean = false
-
-	@PreAuthorize("hasAuthority('MANAGER')")
 	override fun handle(message: Message): InfoCommandResult {
 		val usersStats = userApi.getUsersStats()
 
@@ -40,6 +40,6 @@ class UsersStatsCommand(
 			feedbackCount.feedbackCount,
 		)
 
-		return InfoCommandResult(LocalizationCode.CMD_USERS_STATS, params)
+		return InfoCommandResult(CommandCode.USERS_STATS, params)
 	}
 }

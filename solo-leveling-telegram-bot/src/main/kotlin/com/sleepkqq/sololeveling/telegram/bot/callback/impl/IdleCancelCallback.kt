@@ -4,7 +4,7 @@ import com.sleepkqq.sololeveling.telegram.bot.callback.Callback
 import com.sleepkqq.sololeveling.telegram.bot.service.message.TelegramMessageFactory
 import com.sleepkqq.sololeveling.telegram.bot.service.user.UserSessionService
 import com.sleepkqq.sololeveling.telegram.callback.CallbackAction
-import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
+import com.sleepkqq.sololeveling.telegram.localization.InfoCode
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserSession
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.botapimethods.BotApiMethod
@@ -27,7 +27,7 @@ class IdleCancelCallback(
 		return telegramMessageFactory.editMessageText(
 			chatId = userId,
 			messageId = messageId,
-			code = LocalizationCode.INFO_ACTION_CANCELED
+			code = InfoCode.ACTION_CANCELED
 		)
 	}
 }

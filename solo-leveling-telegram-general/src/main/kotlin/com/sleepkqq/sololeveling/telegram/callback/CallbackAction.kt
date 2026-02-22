@@ -1,5 +1,6 @@
 package com.sleepkqq.sololeveling.telegram.callback
 
+import com.sleepkqq.sololeveling.telegram.localization.ButtonCode
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
 
 enum class CallbackAction(
@@ -7,14 +8,11 @@ enum class CallbackAction(
 	val localizationCode: LocalizationCode
 ) {
 
-	INTERRUPT_CONFIRM("interrupt_confirm", LocalizationCode.BUTTON_CONFIRM),
-	INTERRUPT_CANCEL("interrupt_cancel", LocalizationCode.BUTTON_CANCEL),
-	DEPRECATE_ALL_TASKS_CONFIRM("deprecate_all_tasks_confirm", LocalizationCode.BUTTON_CONFIRM),
-	DEPRECATE_TASKS_BY_TOPIC_CONFIRM(
-		"deprecate_tasks_by_topic_confirm",
-		LocalizationCode.BUTTON_CONFIRM
-	),
-	IDLE_CANCEL("idle_cancel", LocalizationCode.BUTTON_CANCEL),
-	RESET_PLAYER_CONFIRM("reset_player_confirm", LocalizationCode.BUTTON_CONFIRM),
-	SEND_NEWSLETTER_CONFIRM("send_newsletter_confirm", LocalizationCode.BUTTON_CONFIRM)
+	INTERRUPT_CONFIRM("interrupt_confirm", ButtonCode.CONFIRM),
+	INTERRUPT_CANCEL("interrupt_cancel", ButtonCode.CANCEL),
+	DEPRECATE_ALL_TASKS_CONFIRM("deprecate_all_tasks_confirm", ButtonCode.CONFIRM),
+	DEPRECATE_TASKS_BY_TOPIC_CONFIRM("deprecate_tasks_by_topic_confirm", ButtonCode.CONFIRM),
+	IDLE_CANCEL("idle_cancel", ButtonCode.CANCEL),
+	RESET_PLAYER_CONFIRM("reset_player_confirm", ButtonCode.CONFIRM),
+	SEND_NEWSLETTER_CONFIRM("send_newsletter_confirm", ButtonCode.CONFIRM)
 }
