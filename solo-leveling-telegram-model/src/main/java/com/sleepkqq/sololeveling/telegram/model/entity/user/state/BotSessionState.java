@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.sleepkqq.sololeveling.telegram.keyboard.Keyboard;
 import com.sleepkqq.sololeveling.telegram.localization.Localized;
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
+import com.sleepkqq.sololeveling.telegram.localization.Suggestions;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.feedback.FeedbackMessageState;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter.NewsletterConfirmationState;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter.NewsletterDateTimeState;
@@ -67,6 +68,12 @@ public interface BotSessionState {
       public Keyboard getKeyboard() {
         return self.onEnterMessageKeyboard();
       }
+
+      @Nullable
+      @Override
+      public Suggestions<?> getSuggestions() {
+        return self.onEnterMessageSuggestions();
+      }
     };
   }
 
@@ -113,6 +120,11 @@ public interface BotSessionState {
    */
   @Nullable
   default Keyboard onEnterMessageKeyboard() {
+    return null;
+  }
+
+  @Nullable
+  default Suggestions<?> onEnterMessageSuggestions() {
     return null;
   }
 

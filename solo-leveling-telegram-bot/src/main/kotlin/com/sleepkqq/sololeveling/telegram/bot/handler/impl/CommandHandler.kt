@@ -36,7 +36,7 @@ class CommandHandler(
 					?: userSessionService.register(message.chatId)
 
 				command.handle(message, session)
-					?.let { telegramMessageFactory.sendMessage(message.chatId, it) }
+					?.let { telegramMessageFactory.sendMessage(message.chatId, it.localized) }
 					?: return null
 			}
 

@@ -11,7 +11,7 @@ public record NewsletterPhotoState(
     List<LocalizedMessageDto> localizations
 ) implements BotSessionState {
 
-  private static final String SKIP = "skip";
+  private static final String SKIP_PHOTO_PLACEHOLDER = "skip";
 
   @Override
   public LocalizationCode onEnterMessageCode() {
@@ -20,7 +20,7 @@ public record NewsletterPhotoState(
 
   @Override
   public BotSessionState nextState(Message message) {
-    if (message.hasText() && message.getText().toLowerCase().contains(SKIP)) {
+    if (message.hasText() && message.getText().trim().equalsIgnoreCase(SKIP_PHOTO_PLACEHOLDER)) {
       return new NewsletterDateTimeState(name, localizations, null);
     }
 

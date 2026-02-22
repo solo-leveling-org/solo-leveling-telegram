@@ -2,14 +2,23 @@ package com.sleepkqq.sololeveling.telegram.model.entity.user.state.player;
 
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
 import com.sleepkqq.sololeveling.telegram.localization.StateCode;
+import com.sleepkqq.sololeveling.telegram.localization.Suggestions;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
+import java.util.List;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 public record ResetPlayerIdState() implements BotSessionState {
 
+  private static final String CURRENT_USER_ID_PLACEHOLDER = "me";
+
   @Override
   public LocalizationCode onEnterMessageCode() {
     return StateCode.RESET_PLAYER_ENTER;
+  }
+
+  @Override
+  public Suggestions<?> onEnterMessageSuggestions() {
+    return Suggestions.Companion.of(List.of(CURRENT_USER_ID_PLACEHOLDER), 1);
   }
 
   @Override
@@ -19,6 +28,10 @@ public record ResetPlayerIdState() implements BotSessionState {
     }
 
     var text = message.getText().trim();
+
+    if (text.equalsIgnoreCase(CURRENT_USER_ID_PLACEHOLDER)) {
+      return new ResetPlayerConfirmationState(message.getFrom().getId());
+    }
 
     try {
       var userId = Long.parseLong(text);
