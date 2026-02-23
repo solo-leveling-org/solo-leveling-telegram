@@ -1,6 +1,7 @@
 package com.sleepkqq.sololeveling.telegram.model.entity.user.state.transfer;
 
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
+import com.sleepkqq.sololeveling.telegram.localization.StateCode;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
@@ -8,7 +9,7 @@ public record TransferAmountState() implements BotSessionState {
 
   @Override
   public LocalizationCode onEnterMessageCode() {
-    return LocalizationCode.STATE_TRANSFER_AMOUNT;
+    return StateCode.TRANSFER_AMOUNT;
   }
 
   @Override
@@ -25,7 +26,7 @@ public record TransferAmountState() implements BotSessionState {
 
       return new TransferRecipientState(amount);
 
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException _) {
       return this;
     }
   }

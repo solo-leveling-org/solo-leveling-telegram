@@ -2,6 +2,7 @@ package com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter;
 
 import com.sleepkqq.sololeveling.telegram.keyboard.Keyboard;
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
+import com.sleepkqq.sololeveling.telegram.localization.StateCode;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -21,7 +22,7 @@ public record NewsletterConfirmationState(
 
   @Override
   public LocalizationCode onEnterMessageCode() {
-    return LocalizationCode.STATE_NEWSLETTER_CONFIRMATION;
+    return StateCode.NEWSLETTER_CONFIRMATION;
   }
 
   @Override
@@ -42,7 +43,7 @@ public record NewsletterConfirmationState(
 
   @Override
   public LocalizationCode onExitMessageCode() {
-    return LocalizationCode.STATE_NEWSLETTER_EXIT;
+    return StateCode.NEWSLETTER_EXIT;
   }
 
   @Override

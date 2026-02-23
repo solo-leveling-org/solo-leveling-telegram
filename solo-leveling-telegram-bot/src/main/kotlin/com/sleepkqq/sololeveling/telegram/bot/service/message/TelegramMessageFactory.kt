@@ -3,9 +3,11 @@ package com.sleepkqq.sololeveling.telegram.bot.service.message
 import com.sleepkqq.sololeveling.telegram.bot.service.image.ImageResourceService
 import com.sleepkqq.sololeveling.telegram.bot.service.localization.impl.I18nService
 import com.sleepkqq.sololeveling.telegram.bot.service.localization.impl.PhotoSource
+import com.sleepkqq.sololeveling.telegram.keyboard.ButtonStyle
 import com.sleepkqq.sololeveling.telegram.keyboard.Keyboard
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
 import com.sleepkqq.sololeveling.telegram.localization.Localized
+import com.sleepkqq.sololeveling.telegram.localization.Suggestions
 import org.springframework.stereotype.Service
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
@@ -13,6 +15,9 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 import org.telegram.telegrambots.meta.api.objects.InputFile
 import org.telegram.telegrambots.meta.api.objects.LinkPreviewOptions
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
 import java.util.Locale
 
 @Service
@@ -36,6 +41,7 @@ class TelegramMessageFactory(
 		localized: Localized,
 		params: List<Any> = emptyList(),
 		keyboard: Keyboard? = null,
+		suggestions: Suggestions<*>? = null,
 		locale: Locale? = null
 	): SendMessage = sendMessage(
 		chatId = chatId,
@@ -45,6 +51,7 @@ class TelegramMessageFactory(
 			locale
 		),
 		keyboard = keyboard ?: localized.keyboard,
+		suggestions = suggestions ?: localized.suggestions,
 		locale = locale
 	)
 
@@ -53,11 +60,13 @@ class TelegramMessageFactory(
 		code: LocalizationCode,
 		params: List<Any> = emptyList(),
 		keyboard: Keyboard? = null,
+		suggestions: Suggestions<*>? = null,
 		locale: Locale? = null
 	): SendMessage = sendMessage(
 		chatId = chatId,
 		text = i18nService.getMessage(code, params, locale),
 		keyboard = keyboard,
+		suggestions = suggestions,
 		locale = locale
 	)
 
@@ -65,13 +74,19 @@ class TelegramMessageFactory(
 		chatId: Long,
 		text: String,
 		keyboard: Keyboard? = null,
+		suggestions: Suggestions<*>? = null,
 		locale: Locale? = null
 	): SendMessage = SendMessage.builder()
 		.chatId(chatId.toString())
 		.text(text)
 		.parseMode(HTML_MODE)
 		.linkPreviewOptions(NO_LINK_PREVIEW)
-		.apply { keyboard?.let { replyMarkup(i18nService.buildKeyboard(it, locale = locale)) } }
+		.apply {
+			when {
+				suggestions != null -> replyMarkup(buildSuggestionsKeyboard(suggestions))
+				keyboard != null -> replyMarkup(i18nService.buildKeyboard(keyboard, locale = locale))
+			}
+		}
 		.build()
 
 	// ============ SendPhoto ============
@@ -199,4 +214,24 @@ class TelegramMessageFactory(
 		.chatId(chatId.toString())
 		.messageId(messageId)
 		.build()
+
+	// ============ Builders ============
+
+	private fun <T> buildSuggestionsKeyboard(suggestions: Suggestions<T>): ReplyKeyboardMarkup =
+		ReplyKeyboardMarkup.builder()
+			.keyboard(
+				suggestions.items
+					.map {
+						KeyboardButton.builder()
+							.text(suggestions.label(it))
+							.style(ButtonStyle.PRIMARY.name.lowercase())
+							.build()
+					}
+					.chunked(suggestions.columns)
+					.map { KeyboardRow(it) }
+			)
+			.resizeKeyboard(true)
+			.oneTimeKeyboard(true)
+			.selective(true)
+			.build()
 }

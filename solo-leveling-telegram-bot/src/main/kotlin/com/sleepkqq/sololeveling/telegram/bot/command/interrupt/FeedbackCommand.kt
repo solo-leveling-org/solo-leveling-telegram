@@ -1,20 +1,18 @@
 package com.sleepkqq.sololeveling.telegram.bot.command.interrupt
 
+import com.sleepkqq.sololeveling.telegram.bot.annotation.TelegramCommand
 import com.sleepkqq.sololeveling.telegram.bot.service.user.UserSessionService
+import com.sleepkqq.sololeveling.telegram.localization.CommandDescriptionCode
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserSession
+import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.feedback.FeedbackMessageState
-import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.objects.message.Message
 
-@Component
+@TelegramCommand("feedback", CommandDescriptionCode.FEEDBACK)
 class FeedbackCommand(
 	override val userSessionService: UserSessionService
-) : InterruptCommand<FeedbackMessageState> {
+) : InterruptCommand {
 
-	override val command: String = "/feedback"
-	override val visible: Boolean = true
-	override val description: String = "Send feedback"
-
-	override fun createState(message: Message, session: UserSession): FeedbackMessageState =
+	override fun createState(message: Message, session: UserSession): BotSessionState? =
 		FeedbackMessageState()
 }

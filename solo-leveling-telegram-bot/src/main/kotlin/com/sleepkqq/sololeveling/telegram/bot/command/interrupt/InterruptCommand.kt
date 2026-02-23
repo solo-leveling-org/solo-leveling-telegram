@@ -3,7 +3,7 @@ package com.sleepkqq.sololeveling.telegram.bot.command.interrupt
 import com.sleepkqq.sololeveling.telegram.bot.command.Command
 import com.sleepkqq.sololeveling.telegram.bot.service.user.UserSessionService
 import com.sleepkqq.sololeveling.telegram.keyboard.Keyboard
-import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
+import com.sleepkqq.sololeveling.telegram.localization.CommandCode
 import com.sleepkqq.sololeveling.telegram.localization.Localized
 import com.sleepkqq.sololeveling.telegram.model.entity.Immutables
 import com.sleepkqq.sololeveling.telegram.model.entity.user.UserSession
@@ -11,25 +11,24 @@ import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionStat
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.IdleState
 import org.telegram.telegrambots.meta.api.objects.message.Message
 
-interface InterruptCommand<S : BotSessionState> : Command {
+interface InterruptCommand : Command {
 
 	val userSessionService: UserSessionService
 
-	fun createState(message: Message, session: UserSession): S?
+	fun createState(message: Message, session: UserSession): BotSessionState?
 
-	fun handle(message: Message, session: UserSession): InterruptCommandResult<S>? =
+	fun handle(message: Message, session: UserSession): InterruptCommandResult? =
 		if (session.state() is IdleState) {
 			changeState(message, session)
 		} else {
 			pendingInterruptState(message, session)
 		}
 
-	fun changeState(
+	private fun changeState(
 		message: Message,
 		session: UserSession
-	): InterruptCommandResult.StateChanged<S>? {
-		val newState = createState(message, session)
-			?: return null
+	): InterruptCommandResult.StateChanged? {
+		val newState = createState(message, session) ?: return null
 
 		userSessionService.update(
 			Immutables.createUserSession(session) {
@@ -40,12 +39,11 @@ interface InterruptCommand<S : BotSessionState> : Command {
 		return InterruptCommandResult.StateChanged(newState)
 	}
 
-	fun pendingInterruptState(
+	private fun pendingInterruptState(
 		message: Message,
 		session: UserSession
 	): InterruptCommandResult.Question? {
-		val pendingState = createState(message, session)
-			?: return null
+		val pendingState = createState(message, session) ?: return null
 
 		userSessionService.update(
 			Immutables.createUserSession(session) {
@@ -56,24 +54,22 @@ interface InterruptCommand<S : BotSessionState> : Command {
 		return InterruptCommandResult.Question()
 	}
 
-	sealed class InterruptCommandResult<out S : BotSessionState> : Localized {
+	sealed class InterruptCommandResult {
+
+		abstract val localized: Localized
 
 		data class Question(
-			override val localizationCode: LocalizationCode = LocalizationCode.CMD_INTERRUPT,
-			override val keyboard: Keyboard = Keyboard.INTERRUPT_CONFIRMATION
-		) : InterruptCommandResult<Nothing>()
+			override val localized: Localized = object : Localized {
+				override val localizationCode = CommandCode.INTERRUPT
+				override val keyboard = Keyboard.INTERRUPT_CONFIRMATION
+			}
+		) : InterruptCommandResult()
 
-		data class StateChanged<S : BotSessionState>(
-			private val botSessionState: S
-		) : InterruptCommandResult<S>() {
-			override val localizationCode: LocalizationCode
-				get() = botSessionState.onEnterMessageCode()
-
-			override val params: List<Any>
-				get() = botSessionState.onEnterMessageParams()
-
-			override val keyboard: Keyboard?
-				get() = botSessionState.onEnterMessageKeyboard()
+		data class StateChanged(
+			private val botSessionState: BotSessionState
+		) : InterruptCommandResult() {
+			override val localized: Localized
+				get() = botSessionState.onEnterLocalized()
 		}
 	}
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.sleepkqq.sololeveling.telegram.keyboard.Keyboard;
 import com.sleepkqq.sololeveling.telegram.localization.Localized;
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
+import com.sleepkqq.sololeveling.telegram.localization.Suggestions;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.feedback.FeedbackMessageState;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter.NewsletterConfirmationState;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter.NewsletterDateTimeState;
@@ -12,6 +13,7 @@ import com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter.New
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter.NewsletterNameState;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter.NewsletterPhotoState;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.player.ResetPlayerConfirmationState;
+import com.sleepkqq.sololeveling.telegram.model.entity.user.state.player.ResetPlayerIdState;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.task.DeprecateAllTasksConfirmationState;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.task.DeprecateTasksByTopicConfirmationState;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.task.DeprecateTasksByTopicState;
@@ -33,6 +35,7 @@ import org.telegram.telegrambots.meta.api.objects.message.Message;
     @JsonSubTypes.Type(value = DeprecateTasksByTopicConfirmationState.class, name = "DeprecateTasksByTopicConfirmationState"),
     @JsonSubTypes.Type(value = DeprecateTasksByTopicState.class, name = "DeprecateTasksByTopicState"),
     @JsonSubTypes.Type(value = DeprecateAllTasksConfirmationState.class, name = "DeprecateAllTasksConfirmationState"),
+    @JsonSubTypes.Type(value = ResetPlayerIdState.class, name = "ResetPlayerIdState"),
     @JsonSubTypes.Type(value = ResetPlayerConfirmationState.class, name = "ResetPlayerConfirmationState"),
     @JsonSubTypes.Type(value = NewsletterNameState.class, name = "NewsletterNameState"),
     @JsonSubTypes.Type(value = NewsletterMessageState.class, name = "NewsletterMessageState"),
@@ -64,6 +67,12 @@ public interface BotSessionState {
       @Override
       public Keyboard getKeyboard() {
         return self.onEnterMessageKeyboard();
+      }
+
+      @Nullable
+      @Override
+      public Suggestions<?> getSuggestions() {
+        return self.onEnterMessageSuggestions();
       }
     };
   }
@@ -111,6 +120,11 @@ public interface BotSessionState {
    */
   @Nullable
   default Keyboard onEnterMessageKeyboard() {
+    return null;
+  }
+
+  @Nullable
+  default Suggestions<?> onEnterMessageSuggestions() {
     return null;
   }
 

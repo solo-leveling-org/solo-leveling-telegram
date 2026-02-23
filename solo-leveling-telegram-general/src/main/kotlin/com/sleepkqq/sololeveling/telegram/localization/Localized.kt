@@ -11,4 +11,7 @@ interface Localized {
 
 	val keyboard: Keyboard?
 		get() = null
+
+	val suggestions: Suggestions<*>?
+		get() = null
 }

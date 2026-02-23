@@ -2,13 +2,14 @@ package com.sleepkqq.sololeveling.telegram.model.entity.user.state.task;
 
 import com.sleepkqq.sololeveling.telegram.keyboard.Keyboard;
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
+import com.sleepkqq.sololeveling.telegram.localization.StateCode;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
 
 public record DeprecateAllTasksConfirmationState() implements BotSessionState {
 
   @Override
   public LocalizationCode onEnterMessageCode() {
-    return LocalizationCode.STATE_TASKS_DEPRECATE_ALL_CONFIRMATION;
+    return StateCode.TASKS_DEPRECATE_ALL_CONFIRMATION;
   }
 
   @Override
@@ -18,6 +19,6 @@ public record DeprecateAllTasksConfirmationState() implements BotSessionState {
 
   @Override
   public LocalizationCode onExitMessageCode() {
-    return LocalizationCode.STATE_TASKS_DEPRECATE_EXIT;
+    return StateCode.TASKS_DEPRECATE_EXIT;
   }
 }

@@ -1,6 +1,7 @@
 package com.sleepkqq.sololeveling.telegram.model.entity.user.state.newsletter;
 
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode;
+import com.sleepkqq.sololeveling.telegram.localization.StateCode;
 import com.sleepkqq.sololeveling.telegram.model.entity.user.state.BotSessionState;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public record NewsletterDateTimeState(
 
   @Override
   public LocalizationCode onEnterMessageCode() {
-    return LocalizationCode.STATE_NEWSLETTER_DATE_TIME_ENTER;
+    return StateCode.NEWSLETTER_DATE_TIME_ENTER;
   }
 
   @Override
@@ -47,7 +48,7 @@ public record NewsletterDateTimeState(
 
       return new NewsletterConfirmationState(name, localizations, fileId, userInstant);
 
-    } catch (Exception e) {
+    } catch (Exception _) {
       return this;
     }
   }
