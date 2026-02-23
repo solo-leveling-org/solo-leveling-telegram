@@ -3,6 +3,7 @@ package com.sleepkqq.sololeveling.telegram.bot.service.message
 import com.sleepkqq.sololeveling.telegram.bot.service.image.ImageResourceService
 import com.sleepkqq.sololeveling.telegram.bot.service.localization.impl.I18nService
 import com.sleepkqq.sololeveling.telegram.bot.service.localization.impl.PhotoSource
+import com.sleepkqq.sololeveling.telegram.keyboard.ButtonStyle
 import com.sleepkqq.sololeveling.telegram.keyboard.Keyboard
 import com.sleepkqq.sololeveling.telegram.localization.LocalizationCode
 import com.sleepkqq.sololeveling.telegram.localization.Localized
@@ -220,7 +221,12 @@ class TelegramMessageFactory(
 		ReplyKeyboardMarkup.builder()
 			.keyboard(
 				suggestions.items
-					.map { KeyboardButton(suggestions.label(it)) }
+					.map {
+						KeyboardButton.builder()
+							.text(suggestions.label(it))
+							.style(ButtonStyle.PRIMARY.name.lowercase())
+							.build()
+					}
 					.chunked(suggestions.columns)
 					.map { KeyboardRow(it) }
 			)
