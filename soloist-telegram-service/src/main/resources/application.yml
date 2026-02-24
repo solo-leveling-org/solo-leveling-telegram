@@ -5,6 +5,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/soloist
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 50
       minimum-idle: 10
@@ -12,6 +13,9 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
       pool-name: TelegramHikariCP
+  liquibase:
+    enabled: true
+    default-schema: telegram
   data:
     redis:
       host: localhost

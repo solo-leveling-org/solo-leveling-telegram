@@ -1,11 +1,3 @@
-spring:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 10
-  liquibase:
-    enabled: true
-    default-schema: telegram
 jimmer:
   default-enum-strategy: ORDINAL
   show-sql: false
