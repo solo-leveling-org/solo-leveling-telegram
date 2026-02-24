@@ -1,0 +1,5 @@
+jimmer:
+  default-enum-strategy: ORDINAL
+  show-sql: false
+  dialect: org.babyfish.jimmer.sql.dialect.PostgresDialect
+  default-schema: telegram
